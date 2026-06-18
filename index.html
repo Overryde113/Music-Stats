@@ -10,13 +10,13 @@
 </style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel" data-presets="react">
-const { useState } = React;
-
+<script>
+const {
+  useState
+} = React;
 const COVERS = {
   c000: "data:image/jpeg;base64,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",
   c001: "data:image/jpeg;base64,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",
@@ -78,13 +78,10 @@ const COVERS = {
   c057: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDzCiiigAooooAKKsWdrJcygIpIHXAzipzavd3IhtEDYOCwGB+NA7FCitnVdFXTLCOSWcGd2xsHp61jUA1YKKKKBBRRRQAU5VLMAoyTTasWUL3F0kSAEt6rn9BQBqWMcxH2W3LBn+8cDI+nFdEJbDw/agvCWDLyD1dsetVNGsLplNvbogy3zSdQD7Vsax4Yhnsl8+4YSoByx6GkWee397JfXLTScZPC54UVWq9qemy6fLtchlPRhVKmQxKKKKACiiigArpPCGnx3l1umB8tWAPHX8a5yun8KpIkycnGc8GgaPSxDBp0GYguAMc8CvK/Ems3t7r0zJJJGI22RojHoP5mvSpnMtsY2OQRjgVTs/DdiLrzmj3S9d5HOaQ2cfJbz3mmAX6BZFHLdxXLTRiOVkDbsHrXpPja6srTTGhIQXDrtQLjn3/CvM6YmJRS0lAgooooAcnLj612fh8CORSwKr3zjOe3HeuRsyy3CsibyOcV2um3Vu1qFMiwSIOFlGPyb/8AVQNJnUeeka53DjnAPP5etZWseMI9NtvKtgryE/dPOPauT1jVJAXjiuAccZU5rnndnYs7FmPUk0htk19eT3909xcuXdzk57VBSUUyRaSlpKACiinIpdsCgB0AJlXHBrTu71vs5jYiTjgsOaTTrdF3TSDgCqV42XwMcntUmlrIrUUUVRmFFFFABRRRQB//2Q==",
   c058: "data:image/jpeg;base64,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",
   c059: "data:image/jpeg;base64,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",
-  c060: "data:image/jpeg;base64,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",
-
+  c060: "data:image/jpeg;base64,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"
 };
-
-const SECTIONS = ["Overview","All-Time Top Songs","Spotify Stats","Wrapped History","AOTY 2026","Underground","Discord","YouTube"];
-
-const rc = (r) => {
+const SECTIONS = ["Overview", "All-Time Top Songs", "Spotify Stats", "Wrapped History", "AOTY 2026", "Underground", "Discord", "YouTube"];
+const rc = r => {
   if (!r && r !== "0" && r !== 0) return "#333";
   const n = parseFloat(r);
   if (n >= 9) return "#00e5a0";
@@ -95,331 +92,1556 @@ const rc = (r) => {
   if (n >= 5) return "#ffb347";
   return "#ff5f5f";
 };
-
-const RB = ({ r }) => {
-  if (r === null || r === undefined || r === "_") return <span style={{color:"#333",fontSize:11}}>—</span>;
-  return <span style={{background:rc(r),color:"#050505",fontWeight:800,fontSize:13,padding:"3px 10px",borderRadius:5,fontFamily:"monospace"}}>{r}/10</span>;
+const RB = ({
+  r
+}) => {
+  if (r === null || r === undefined || r === "_") return /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#333",
+      fontSize: 11
+    }
+  }, "—");
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: rc(r),
+      color: "#050505",
+      fontWeight: 800,
+      fontSize: 13,
+      padding: "3px 10px",
+      borderRadius: 5,
+      fontFamily: "monospace"
+    }
+  }, r, "/10");
 };
-
-const SC = ({ label, value, sub, accent }) => (
-  <div style={{background:"#0e0e0e",border:`1px solid ${accent?"#1a3022":"#1c1c1c"}`,borderRadius:9,padding:"14px 16px",flex:"1 1 120px"}}>
-    <div style={{color:"#aaa",fontSize:9,textTransform:"uppercase",letterSpacing:2,marginBottom:4}}>{label}</div>
-    <div style={{color: accent?"#00e5a0":"#fff",fontSize:24,fontWeight:800,fontFamily:"monospace",lineHeight:1}}>{value}</div>
-    {sub && <div style={{color:"#aaa",fontSize:10,marginTop:3}}>{sub}</div>}
-  </div>
-);
-
-const SH = ({ children }) => (
-  <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:3,color:"#00e5a0",borderBottom:"1px solid #141414",paddingBottom:8,marginBottom:16,marginTop:32,fontWeight:700}}>{children}</div>
-);
-
-const Row = ({ rank, left, right, accent, gold }) => (
-  <div style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",borderRadius:6,background:gold?"#0d1a12":"transparent",border:gold?"1px solid #1a3022":"1px solid transparent",marginBottom:3}}>
-    <span style={{color:gold?"#00e5a0":"#aaa",fontSize:10,fontFamily:"monospace",minWidth:22,textAlign:"right",fontWeight:gold?800:400}}>{rank}</span>
-    <div style={{flex:1,minWidth:0}}>
-      <div style={{color:"#ddd",fontSize:15,fontWeight:600,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{left}</div>
-      {accent && <div style={{color:"#aaa",fontSize:11,marginTop:1}}>{accent}</div>}
-    </div>
-    {right && <span style={{color:"#00e5a0",fontSize:11,fontFamily:"monospace",fontWeight:700,whiteSpace:"nowrap"}}>{right}</span>}
-  </div>
-);
-
-const YBar = ({ label, val, max, partial, color }) => (
-  <div style={{marginBottom:9}}>
-    <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-      <span style={{color:"#aaa",fontSize:11,fontFamily:"monospace"}}>{label}{partial?" *":""}</span>
-      <span style={{color:color||"#00e5a0",fontSize:11,fontFamily:"monospace"}}>{val}</span>
-    </div>
-    <div style={{background:"#141414",borderRadius:3,height:5}}>
-      <div style={{width:`${Math.min((typeof val==="number"?val:parseInt(val.replace(/,/g,"")))/max*100,100)}%`,height:"100%",background:partial?"#1a4030":`linear-gradient(90deg,${color||"#00e5a0"},${color||"#00b87a"})`,borderRadius:3}}/>
-    </div>
-  </div>
-);
+const SC = ({
+  label,
+  value,
+  sub,
+  accent
+}) => /*#__PURE__*/React.createElement("div", {
+  style: {
+    background: "#0e0e0e",
+    border: `1px solid ${accent ? "#1a3022" : "#1c1c1c"}`,
+    borderRadius: 9,
+    padding: "14px 16px",
+    flex: "1 1 120px"
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    color: "#aaa",
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 2,
+    marginBottom: 4
+  }
+}, label), /*#__PURE__*/React.createElement("div", {
+  style: {
+    color: accent ? "#00e5a0" : "#fff",
+    fontSize: 24,
+    fontWeight: 800,
+    fontFamily: "monospace",
+    lineHeight: 1
+  }
+}, value), sub && /*#__PURE__*/React.createElement("div", {
+  style: {
+    color: "#aaa",
+    fontSize: 10,
+    marginTop: 3
+  }
+}, sub));
+const SH = ({
+  children
+}) => /*#__PURE__*/React.createElement("div", {
+  style: {
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: 3,
+    color: "#00e5a0",
+    borderBottom: "1px solid #141414",
+    paddingBottom: 8,
+    marginBottom: 16,
+    marginTop: 32,
+    fontWeight: 700
+  }
+}, children);
+const Row = ({
+  rank,
+  left,
+  right,
+  accent,
+  gold
+}) => /*#__PURE__*/React.createElement("div", {
+  style: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    padding: "7px 10px",
+    borderRadius: 6,
+    background: gold ? "#0d1a12" : "transparent",
+    border: gold ? "1px solid #1a3022" : "1px solid transparent",
+    marginBottom: 3
+  }
+}, /*#__PURE__*/React.createElement("span", {
+  style: {
+    color: gold ? "#00e5a0" : "#aaa",
+    fontSize: 10,
+    fontFamily: "monospace",
+    minWidth: 22,
+    textAlign: "right",
+    fontWeight: gold ? 800 : 400
+  }
+}, rank), /*#__PURE__*/React.createElement("div", {
+  style: {
+    flex: 1,
+    minWidth: 0
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    color: "#ddd",
+    fontSize: 15,
+    fontWeight: 600,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  }
+}, left), accent && /*#__PURE__*/React.createElement("div", {
+  style: {
+    color: "#aaa",
+    fontSize: 11,
+    marginTop: 1
+  }
+}, accent)), right && /*#__PURE__*/React.createElement("span", {
+  style: {
+    color: "#00e5a0",
+    fontSize: 11,
+    fontFamily: "monospace",
+    fontWeight: 700,
+    whiteSpace: "nowrap"
+  }
+}, right));
+const YBar = ({
+  label,
+  val,
+  max,
+  partial,
+  color
+}) => /*#__PURE__*/React.createElement("div", {
+  style: {
+    marginBottom: 9
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 3
+  }
+}, /*#__PURE__*/React.createElement("span", {
+  style: {
+    color: "#aaa",
+    fontSize: 11,
+    fontFamily: "monospace"
+  }
+}, label, partial ? " *" : ""), /*#__PURE__*/React.createElement("span", {
+  style: {
+    color: color || "#00e5a0",
+    fontSize: 11,
+    fontFamily: "monospace"
+  }
+}, val)), /*#__PURE__*/React.createElement("div", {
+  style: {
+    background: "#141414",
+    borderRadius: 3,
+    height: 5
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  style: {
+    width: `${Math.min((typeof val === "number" ? val : parseInt(val.replace(/,/g, ""))) / max * 100, 100)}%`,
+    height: "100%",
+    background: partial ? "#1a4030" : `linear-gradient(90deg,${color || "#00e5a0"},${color || "#00b87a"})`,
+    borderRadius: 3
+  }
+})));
 
 // ── ALBUM CARD ───────────────────────────────────────
-const AlbumCard = ({ num, title, artist, rating, date, songs, notes, top5, top5Label, top5b, top5bLabel, coverKey }) => {
+const AlbumCard = ({
+  num,
+  title,
+  artist,
+  rating,
+  date,
+  songs,
+  notes,
+  top5,
+  top5Label,
+  top5b,
+  top5bLabel,
+  coverKey
+}) => {
   const [open, setOpen] = useState(false);
   const has = top5?.some(Boolean) || top5b?.some(Boolean);
   const art = coverKey ? COVERS[coverKey] : null;
-  return (
-    <div style={{background:"#0a0a0a",border:`1px solid ${rating?rc(rating)+"1e":"#161616"}`,borderRadius:8,marginBottom:5,overflow:"hidden"}}>
-      <div onClick={()=>has&&setOpen(!open)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 13px",cursor:has?"pointer":"default"}}>
-        <span style={{color:"#aaa",fontSize:10,fontFamily:"monospace",minWidth:20,flexShrink:0}}>{num}</span>
-        <div style={{width:52,height:52,borderRadius:6,background:"#161616",flexShrink:0,overflow:"hidden"}}>
-          {art && <img src={art} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
-        </div>
-        <div style={{flex:1,minWidth:0}}>
-          <div style={{color:"#efefef",fontSize:15,fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{title}</div>
-          <div style={{color:"#aaa",fontSize:11,marginTop:2}}>{artist}{date?` · ${date}`:""}{songs?` · ${songs} songs`:""}{notes?` · ${notes}`:""}</div>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:7,flexShrink:0}}>
-          <RB r={rating}/>
-          {has && <span style={{color:"#222",fontSize:9}}>{open?"▲":"▼"}</span>}
-        </div>
-      </div>
-      {open && (
-        <div style={{borderTop:"1px solid #141414",padding:"9px 13px 12px 42px"}}>
-          {top5?.some(Boolean) && (
-            <div style={{marginBottom:top5b?10:0}}>
-              {top5Label && <div style={{color:"#bbb",fontSize:9,textTransform:"uppercase",letterSpacing:2,marginBottom:7}}>{top5Label}</div>}
-              {top5.filter(Boolean).map((t,i)=>(
-                <div key={i} style={{display:"flex",gap:8,marginBottom:5}}>
-                  <span style={{color:"#999",fontSize:10,fontFamily:"monospace",minWidth:14}}>{i+1}.</span>
-                  <span style={{color:"#aaa",fontSize:12}}>{t}</span>
-                </div>
-              ))}
-            </div>
-          )}
-          {top5b?.some(Boolean) && (
-            <div>
-              {top5bLabel && <div style={{color:"#bbb",fontSize:9,textTransform:"uppercase",letterSpacing:2,marginBottom:7,marginTop:4}}>{top5bLabel}</div>}
-              {top5b.filter(Boolean).map((t,i)=>(
-                <div key={i} style={{display:"flex",gap:8,marginBottom:5}}>
-                  <span style={{color:"#999",fontSize:10,fontFamily:"monospace",minWidth:14}}>{i+1}.</span>
-                  <span style={{color:"#aaa",fontSize:12}}>{t}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#0a0a0a",
+      border: `1px solid ${rating ? rc(rating) + "1e" : "#161616"}`,
+      borderRadius: 8,
+      marginBottom: 5,
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => has && setOpen(!open),
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "10px 13px",
+      cursor: has ? "pointer" : "default"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 20,
+      flexShrink: 0
+    }
+  }, num), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 52,
+      height: 52,
+      borderRadius: 6,
+      background: "#161616",
+      flexShrink: 0,
+      overflow: "hidden"
+    }
+  }, art && /*#__PURE__*/React.createElement("img", {
+    src: art,
+    alt: "",
+    style: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      display: "block"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#efefef",
+      fontSize: 15,
+      fontWeight: 700,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
+  }, title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#aaa",
+      fontSize: 11,
+      marginTop: 2
+    }
+  }, artist, date ? ` · ${date}` : "", songs ? ` · ${songs} songs` : "", notes ? ` · ${notes}` : "")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 7,
+      flexShrink: 0
+    }
+  }, /*#__PURE__*/React.createElement(RB, {
+    r: rating
+  }), has && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#222",
+      fontSize: 9
+    }
+  }, open ? "▲" : "▼"))), open && /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderTop: "1px solid #141414",
+      padding: "9px 13px 12px 42px"
+    }
+  }, top5?.some(Boolean) && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: top5b ? 10 : 0
+    }
+  }, top5Label && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#bbb",
+      fontSize: 9,
+      textTransform: "uppercase",
+      letterSpacing: 2,
+      marginBottom: 7
+    }
+  }, top5Label), top5.filter(Boolean).map((t, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 5
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#999",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 14
+    }
+  }, i + 1, "."), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 12
+    }
+  }, t)))), top5b?.some(Boolean) && /*#__PURE__*/React.createElement("div", null, top5bLabel && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#bbb",
+      fontSize: 9,
+      textTransform: "uppercase",
+      letterSpacing: 2,
+      marginBottom: 7,
+      marginTop: 4
+    }
+  }, top5bLabel), top5b.filter(Boolean).map((t, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 5
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#999",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 14
+    }
+  }, i + 1, "."), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 12
+    }
+  }, t))))));
 };
 
 // ── SIMPLE ROW ───────────────────────────────────────
-const SR = ({ num, title, artist, date, songs, notes, coverKey }) => {
+const SR = ({
+  num,
+  title,
+  artist,
+  date,
+  songs,
+  notes,
+  coverKey
+}) => {
   const art = coverKey ? COVERS[coverKey] : null;
-  return (
-    <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:6,background:"#080808",border:"1px solid #141414",marginBottom:3}}>
-      <span style={{color:"#aaa",fontSize:10,fontFamily:"monospace",minWidth:22,textAlign:"right",flexShrink:0}}>{num}</span>
-      <div style={{width:46,height:46,borderRadius:5,background:"#141414",flexShrink:0,overflow:"hidden"}}>
-        {art && <img src={art} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
-      </div>
-      <div style={{flex:1,minWidth:0}}>
-        <div style={{color:"#bbb",fontSize:15,fontWeight:600,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{title}</div>
-        <div style={{color:"#aaa",fontSize:11,marginTop:1}}>{artist}{date?` · ${date}`:""}{songs?` · ${songs} songs`:""}{notes?` · ${notes}`:""}</div>
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "8px 10px",
+      borderRadius: 6,
+      background: "#080808",
+      border: "1px solid #141414",
+      marginBottom: 3
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 22,
+      textAlign: "right",
+      flexShrink: 0
+    }
+  }, num), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 46,
+      height: 46,
+      borderRadius: 5,
+      background: "#141414",
+      flexShrink: 0,
+      overflow: "hidden"
+    }
+  }, art && /*#__PURE__*/React.createElement("img", {
+    src: art,
+    alt: "",
+    style: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      display: "block"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#bbb",
+      fontSize: 15,
+      fontWeight: 600,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
+  }, title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#aaa",
+      fontSize: 11,
+      marginTop: 1
+    }
+  }, artist, date ? ` · ${date}` : "", songs ? ` · ${songs} songs` : "", notes ? ` · ${notes}` : "")));
 };
 
 // ── TOP 120 ──────────────────────────────────────────
-const TOP120 = [
-  {rank:1,title:"Face 2 Face",artist:"Juice WRLD",album:"Face 2 Face",cover:COVERS.c022},
-  {rank:2,title:"ALL RED",artist:"Playboi Carti",album:"ALL RED",cover:COVERS.c002},
-  {rank:3,title:"I KNOW ?",artist:"Travis Scott",album:"Utopia",cover:COVERS.c054},
-  {rank:4,title:"Raydar",artist:"JID",album:"The Forever Story (Extended)",cover:COVERS.c049},
-  {rank:5,title:"Righteous",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:6,title:"World Tour (Aquafina)",artist:"Juice WRLD",album:"The Pre-Party",cover:COVERS.c052},
-  {rank:7,title:"Come & Go (with Marshmello)",artist:"Juice WRLD, Marshmello",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:8,title:"Lightyears (with Young Thug)",artist:"Juice WRLD, Young Thug",album:"The Pre-Party",cover:COVERS.c052},
-  {rank:9,title:"Feeling",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:10,title:"Empty",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:11,title:"Syphilis",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:12,title:"Life's A Mess (feat. Halsey)",artist:"Juice WRLD, Halsey",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:13,title:"Bandit (with YoungBoy Never Broke Again)",artist:"Juice WRLD, YoungBoy Never Broke Again",album:"Bandit"},
-  {rank:14,title:"Mannequin Challenge (feat. Juice WRLD)",artist:"Young Thug, Juice WRLD",album:"So Much Fun"},
-  {rank:15,title:"7 Am Freestyle",artist:"Future, Juice WRLD",album:"WOD"},
-  {rank:16,title:"Ivy",artist:"Frank Ocean",album:"Blonde",cover:COVERS.c010},
-  {rank:17,title:"Big",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:18,title:"Lucid Dreams",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:19,title:"Maze",artist:"Juice WRLD",album:"Death Race For Love"},
-  {rank:20,title:"Tell Me U Luv Me (with Trippie Redd)",artist:"Juice WRLD, Trippie Redd",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:21,title:"How it go",artist:"Yeat",album:"AftërLyfe"},
-  {rank:22,title:"Hate Me",artist:"Lil Yachty, ian",album:"Hate Me"},
-  {rank:23,title:"All Girls Are The Same",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:24,title:"Hate The Other Side (with Marshmello & The Kid LAROI)",artist:"Juice WRLD, Marshmello, The Kid LAROI",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:25,title:"The Bees Knees",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:26,title:"Novacane",artist:"Frank Ocean",album:"Novacane"},
-  {rank:27,title:"The Girl Is Mine (with Paul McCartney)",artist:"Michael Jackson, Paul McCartney",album:"Thriller 40"},
-  {rank:28,title:"Nuketown (feat. Juice WRLD)",artist:"Ski Mask The Slump God, Juice WRLD",album:"STOKELEY"},
-  {rank:29,title:"Smile (with The Weeknd)",artist:"Juice WRLD, The Weeknd",album:"Smile (with The Weeknd)"},
-  {rank:30,title:"Armed And Dangerous",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:31,title:"Flex Up (feat. Future & Playboi Carti)",artist:"Lil Yachty, Future, Playboi Carti",album:"Lil Boat 3.5"},
-  {rank:32,title:"SAME ENERGY",artist:"The Kid LAROI",album:"F*CK LOVE 3+: OVER YOU"},
-  {rank:33,title:"Screw Juice",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:34,title:"Condone It",artist:"Juice WRLD",album:"The Party Never Ends 2.0",cover:COVERS.c050},
-  {rank:35,title:"Wasted (feat. Lil Uzi Vert)",artist:"Juice WRLD, Lil Uzi Vert",album:"Goodbye & Good Riddance"},
-  {rank:36,title:"I'm Still",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:37,title:"Bad Energy",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:38,title:"Spend It",artist:"Juice WRLD",album:"The Party Never Ends 2.0",cover:COVERS.c050},
-  {rank:39,title:"Bad Bad Bad (feat. Lil Baby)",artist:"Young Thug, Lil Baby",album:"So Much Fun (Deluxe)"},
-  {rank:40,title:"Fine China",artist:"Future, Juice WRLD",album:"WOD"},
-  {rank:41,title:"End Of The Road",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:42,title:"Bad Boy (with Young Thug)",artist:"Juice WRLD, Young Thug",album:"Bad Boy (with Young Thug)"},
-  {rank:43,title:"Bullets With Names (feat. Young Thug)",artist:"mgk, Young Thug, RJMrLA, Lil Duke",album:"Bullets With Names"},
-  {rank:44,title:"Out My Way",artist:"Juice WRLD",album:"Death Race For Love"},
-  {rank:45,title:"K POP",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:46,title:"Make It Back",artist:"Juice WRLD",album:"WOD"},
-  {rank:47,title:"Silly Watch",artist:"Lil Uzi Vert",album:"Eternal Atake (Deluxe) - LUV vs...",cover:COVERS.c021},
-  {rank:48,title:"Let King Tonka Talk",artist:"Yeat, King Kylie",album:"Let King Tonka Talk"},
-  {rank:49,title:"Robbery",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:50,title:"Blood On My Jeans",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:51,title:"Conversations",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:52,title:"Godzilla (feat. Juice WRLD)",artist:"Eminem, Juice WRLD",album:"Music To Be Murdered By"},
-  {rank:53,title:"Candles",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:54,title:"EVIL JORDAN",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:55,title:"Had Enough (feat. Quavo & Offset)",artist:"Don Toliver, Offset, Quavo, DJ Candlestick",album:"Heaven Or Hell",cover:COVERS.c028},
-  {rank:56,title:"Flaws And Sins",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:57,title:"From My Window",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:58,title:"Homecoming",artist:"Lil Uzi Vert",album:"Eternal Atake (Deluxe) - LUV vs...",cover:COVERS.c021},
-  {rank:59,title:"Hide (feat. Seezyn)",artist:"Juice WRLD, Seezyn",album:"Spider-Man: Into the Spider-Verse"},
-  {rank:60,title:"ON GOD (feat. Young Thug)",artist:"Juice WRLD, Young Thug",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:61,title:"Rider",artist:"Juice WRLD",album:"Death Race For Love"},
-  {rank:62,title:"PTSD",artist:"G Herbo, Lil Uzi Vert, Juice WRLD",album:"PTSD"},
-  {rank:63,title:"Desire",artist:"Juice WRLD",album:"Death Race For Love"},
-  {rank:64,title:"Shorty",artist:"Future, Juice WRLD",album:"WOD"},
-  {rank:65,title:"Lace It (with Eminem & benny blanco)",artist:"Juice WRLD, Eminem, benny blanco",album:"Lace It"},
-  {rank:66,title:"Girl Of My Dreams (with SUGA of BTS)",artist:"Juice WRLD, SUGA, BTS",album:"Fighting Demons (Deluxe)"},
-  {rank:67,title:"The Light",artist:"Juice WRLD",album:"The Light"},
-  {rank:68,title:"Fast",artist:"Juice WRLD",album:"Death Race For Love (Bonus Tracks)"},
-  {rank:69,title:"No Handoutz (feat. Yeat)",artist:"Internet Money, Yeat",album:"No Handoutz (feat. Yeat)"},
-  {rank:70,title:"Titanic",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:71,title:"I Want It",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:72,title:"Lean Wit Me",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:73,title:"1400 / 999 Freestyle",artist:"Trippie Redd, Juice WRLD",album:"A Love Letter To You 3"},
-  {rank:74,title:"Up Up And Away",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:75,title:"Yacht Club (feat. Juice WRLD)",artist:"Lil Yachty, Juice WRLD",album:"Nuthin' 2 Prove"},
-  {rank:76,title:"Already Dead",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:77,title:"Strawberry Peels (feat. Young Thug & Gunna)",artist:"Lil Uzi Vert, Gunna, Young Thug",album:"Eternal Atake (Deluxe) - LUV vs...",cover:COVERS.c021},
-  {rank:78,title:"Heavy stunts (with Don Toliver)",artist:"Yeat, Don Toliver",album:"King tonka",cover:COVERS.c032},
-  {rank:79,title:"Scared Of Love",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:80,title:"Fighting Demons",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:81,title:"My wrist (with Young Thug)",artist:"Yeat, Young Thug",album:"My wrist (with Young Thug)"},
-  {rank:82,title:"POP OUT",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:83,title:"MOJO JOJO",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:84,title:"No Issue",artist:"Future, Juice WRLD",album:"WOD"},
-  {rank:85,title:"Wake Up! (feat. Juice WRLD)",artist:"Ski Mask The Slump God, Juice WRLD",album:"11th Dimension"},
-  {rank:86,title:"Hurt Me",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:87,title:"Burn",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:88,title:"KNIGHT CRAWLER (feat. Juice WRLD)",artist:"Trippie Redd, Juice WRLD",album:"MANSION MUSIK"},
-  {rank:89,title:"Demons and Angels (feat. Juice WRLD)",artist:"A Boogie Wit da Hoodie, Juice WRLD",album:"Hoodie SZN"},
-  {rank:90,title:"Roses (with Juice WRLD feat. Brendon Urie)",artist:"benny blanco, Juice WRLD, Brendon Urie",album:"Roses"},
-  {rank:91,title:"Let Me Know (I Wonder Why Freestyle)",artist:"Juice WRLD",album:"Let Me Know (I Wonder Why Freestyle)"},
-  {rank:92,title:"Jocelyn Flores",artist:"XXXTENTACION",album:"17"},
-  {rank:93,title:"Jus bëtter",artist:"Yeat",album:"2 Alivë"},
-  {rank:94,title:"GO (feat. Juice WRLD)",artist:"The Kid LAROI, Juice WRLD",album:"F*CK LOVE"},
-  {rank:95,title:"Man Of The Year",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:96,title:"Hard Work Pays Off",artist:"Future, Juice WRLD",album:"WOD"},
-  {rank:97,title:"I Write Sins Not Tragedies",artist:"Panic! At The Disco",album:"A Fever You Can't Sweat Out"},
-  {rank:98,title:"Hot (Remix) [feat. Gunna and Travis Scott]",artist:"Young Thug, Travis Scott, Gunna",album:"So Much Fun (Deluxe)"},
-  {rank:99,title:"I Think I'm OKAY (with YUNGBLUD & Travis Barker)",artist:"mgk, YUNGBLUD, Travis Barker",album:"Hotel Diablo"},
-  {rank:100,title:"I'll Be Fine",artist:"Juice WRLD",album:"Goodbye & Good Riddance"},
-  {rank:101,title:"Wishing Well",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:102,title:"Who Shot Cupid?",artist:"Juice WRLD",album:"Death Race For Love"},
-  {rank:103,title:"MoshPit (feat. Juice WRLD)",artist:"Kodak Black, Juice WRLD",album:"Dying to Live"},
-  {rank:104,title:"Rockstar In His Prime",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:105,title:"Feline (with Polo G & Trippie Redd)",artist:"Juice WRLD, Polo G, Trippie Redd",album:"Fighting Demons (Deluxe)"},
-  {rank:106,title:"Doom",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:107,title:"You Wouldn't Understand",artist:"Juice WRLD",album:"Fighting Demons (Deluxe)"},
-  {rank:108,title:"FINE SHIT",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:109,title:"PHILLY (with Travis Scott)",artist:"Playboi Carti, Travis Scott",album:"MUSIC",cover:COVERS.c036},
-  {rank:110,title:"RADAR",artist:"Playboi Carti",album:"MUSIC",cover:COVERS.c036},
-  {rank:111,title:"Rich And Blind",artist:"Juice WRLD",album:"Rich And Blind"},
-  {rank:112,title:"Unbothered",artist:"Ski Mask The Slump God",album:"STOKELEY"},
-  {rank:113,title:"Ring Ring (with Rvssian feat. Clever)",artist:"Juice WRLD, Rvssian, Clever",album:"Death Race For Love"},
-  {rank:114,title:"Costa Rica (feat. The Kid LAROI)",artist:"Bankrol Hayden, The Kid LAROI",album:"Pain is Temporary"},
-  {rank:115,title:"concert for aliens",artist:"mgk",album:"Tickets To My Downfall"},
-  {rank:116,title:"Talk 2 God",artist:"Yeat",album:"4L"},
-  {rank:117,title:"CRUSH (with Travis Scott)",artist:"Playboi Carti, Travis Scott",album:"MUSIC",cover:COVERS.c036},
-  {rank:118,title:"The Bigger Picture",artist:"Lil Baby",album:"The Bigger Picture"},
-  {rank:119,title:"Can't Die",artist:"Juice WRLD",album:"Legends Never Die",cover:COVERS.c034},
-  {rank:120,title:"HUMBLE.",artist:"Kendrick Lamar",album:"DAMN."},
-];
+const TOP120 = [{
+  rank: 1,
+  title: "Face 2 Face",
+  artist: "Juice WRLD",
+  album: "Face 2 Face",
+  cover: COVERS.c022
+}, {
+  rank: 2,
+  title: "ALL RED",
+  artist: "Playboi Carti",
+  album: "ALL RED",
+  cover: COVERS.c002
+}, {
+  rank: 3,
+  title: "I KNOW ?",
+  artist: "Travis Scott",
+  album: "Utopia",
+  cover: COVERS.c054
+}, {
+  rank: 4,
+  title: "Raydar",
+  artist: "JID",
+  album: "The Forever Story (Extended)",
+  cover: COVERS.c049
+}, {
+  rank: 5,
+  title: "Righteous",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 6,
+  title: "World Tour (Aquafina)",
+  artist: "Juice WRLD",
+  album: "The Pre-Party",
+  cover: COVERS.c052
+}, {
+  rank: 7,
+  title: "Come & Go (with Marshmello)",
+  artist: "Juice WRLD, Marshmello",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 8,
+  title: "Lightyears (with Young Thug)",
+  artist: "Juice WRLD, Young Thug",
+  album: "The Pre-Party",
+  cover: COVERS.c052
+}, {
+  rank: 9,
+  title: "Feeling",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 10,
+  title: "Empty",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 11,
+  title: "Syphilis",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 12,
+  title: "Life's A Mess (feat. Halsey)",
+  artist: "Juice WRLD, Halsey",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 13,
+  title: "Bandit (with YoungBoy Never Broke Again)",
+  artist: "Juice WRLD, YoungBoy Never Broke Again",
+  album: "Bandit"
+}, {
+  rank: 14,
+  title: "Mannequin Challenge (feat. Juice WRLD)",
+  artist: "Young Thug, Juice WRLD",
+  album: "So Much Fun"
+}, {
+  rank: 15,
+  title: "7 Am Freestyle",
+  artist: "Future, Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 16,
+  title: "Ivy",
+  artist: "Frank Ocean",
+  album: "Blonde",
+  cover: COVERS.c010
+}, {
+  rank: 17,
+  title: "Big",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 18,
+  title: "Lucid Dreams",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 19,
+  title: "Maze",
+  artist: "Juice WRLD",
+  album: "Death Race For Love"
+}, {
+  rank: 20,
+  title: "Tell Me U Luv Me (with Trippie Redd)",
+  artist: "Juice WRLD, Trippie Redd",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 21,
+  title: "How it go",
+  artist: "Yeat",
+  album: "AftërLyfe"
+}, {
+  rank: 22,
+  title: "Hate Me",
+  artist: "Lil Yachty, ian",
+  album: "Hate Me"
+}, {
+  rank: 23,
+  title: "All Girls Are The Same",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 24,
+  title: "Hate The Other Side (with Marshmello & The Kid LAROI)",
+  artist: "Juice WRLD, Marshmello, The Kid LAROI",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 25,
+  title: "The Bees Knees",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 26,
+  title: "Novacane",
+  artist: "Frank Ocean",
+  album: "Novacane"
+}, {
+  rank: 27,
+  title: "The Girl Is Mine (with Paul McCartney)",
+  artist: "Michael Jackson, Paul McCartney",
+  album: "Thriller 40"
+}, {
+  rank: 28,
+  title: "Nuketown (feat. Juice WRLD)",
+  artist: "Ski Mask The Slump God, Juice WRLD",
+  album: "STOKELEY"
+}, {
+  rank: 29,
+  title: "Smile (with The Weeknd)",
+  artist: "Juice WRLD, The Weeknd",
+  album: "Smile (with The Weeknd)"
+}, {
+  rank: 30,
+  title: "Armed And Dangerous",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 31,
+  title: "Flex Up (feat. Future & Playboi Carti)",
+  artist: "Lil Yachty, Future, Playboi Carti",
+  album: "Lil Boat 3.5"
+}, {
+  rank: 32,
+  title: "SAME ENERGY",
+  artist: "The Kid LAROI",
+  album: "F*CK LOVE 3+: OVER YOU"
+}, {
+  rank: 33,
+  title: "Screw Juice",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 34,
+  title: "Condone It",
+  artist: "Juice WRLD",
+  album: "The Party Never Ends 2.0",
+  cover: COVERS.c050
+}, {
+  rank: 35,
+  title: "Wasted (feat. Lil Uzi Vert)",
+  artist: "Juice WRLD, Lil Uzi Vert",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 36,
+  title: "I'm Still",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 37,
+  title: "Bad Energy",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 38,
+  title: "Spend It",
+  artist: "Juice WRLD",
+  album: "The Party Never Ends 2.0",
+  cover: COVERS.c050
+}, {
+  rank: 39,
+  title: "Bad Bad Bad (feat. Lil Baby)",
+  artist: "Young Thug, Lil Baby",
+  album: "So Much Fun (Deluxe)"
+}, {
+  rank: 40,
+  title: "Fine China",
+  artist: "Future, Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 41,
+  title: "End Of The Road",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 42,
+  title: "Bad Boy (with Young Thug)",
+  artist: "Juice WRLD, Young Thug",
+  album: "Bad Boy (with Young Thug)"
+}, {
+  rank: 43,
+  title: "Bullets With Names (feat. Young Thug)",
+  artist: "mgk, Young Thug, RJMrLA, Lil Duke",
+  album: "Bullets With Names"
+}, {
+  rank: 44,
+  title: "Out My Way",
+  artist: "Juice WRLD",
+  album: "Death Race For Love"
+}, {
+  rank: 45,
+  title: "K POP",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 46,
+  title: "Make It Back",
+  artist: "Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 47,
+  title: "Silly Watch",
+  artist: "Lil Uzi Vert",
+  album: "Eternal Atake (Deluxe) - LUV vs...",
+  cover: COVERS.c021
+}, {
+  rank: 48,
+  title: "Let King Tonka Talk",
+  artist: "Yeat, King Kylie",
+  album: "Let King Tonka Talk"
+}, {
+  rank: 49,
+  title: "Robbery",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 50,
+  title: "Blood On My Jeans",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 51,
+  title: "Conversations",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 52,
+  title: "Godzilla (feat. Juice WRLD)",
+  artist: "Eminem, Juice WRLD",
+  album: "Music To Be Murdered By"
+}, {
+  rank: 53,
+  title: "Candles",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 54,
+  title: "EVIL JORDAN",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 55,
+  title: "Had Enough (feat. Quavo & Offset)",
+  artist: "Don Toliver, Offset, Quavo, DJ Candlestick",
+  album: "Heaven Or Hell",
+  cover: COVERS.c028
+}, {
+  rank: 56,
+  title: "Flaws And Sins",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 57,
+  title: "From My Window",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 58,
+  title: "Homecoming",
+  artist: "Lil Uzi Vert",
+  album: "Eternal Atake (Deluxe) - LUV vs...",
+  cover: COVERS.c021
+}, {
+  rank: 59,
+  title: "Hide (feat. Seezyn)",
+  artist: "Juice WRLD, Seezyn",
+  album: "Spider-Man: Into the Spider-Verse"
+}, {
+  rank: 60,
+  title: "ON GOD (feat. Young Thug)",
+  artist: "Juice WRLD, Young Thug",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 61,
+  title: "Rider",
+  artist: "Juice WRLD",
+  album: "Death Race For Love"
+}, {
+  rank: 62,
+  title: "PTSD",
+  artist: "G Herbo, Lil Uzi Vert, Juice WRLD",
+  album: "PTSD"
+}, {
+  rank: 63,
+  title: "Desire",
+  artist: "Juice WRLD",
+  album: "Death Race For Love"
+}, {
+  rank: 64,
+  title: "Shorty",
+  artist: "Future, Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 65,
+  title: "Lace It (with Eminem & benny blanco)",
+  artist: "Juice WRLD, Eminem, benny blanco",
+  album: "Lace It"
+}, {
+  rank: 66,
+  title: "Girl Of My Dreams (with SUGA of BTS)",
+  artist: "Juice WRLD, SUGA, BTS",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 67,
+  title: "The Light",
+  artist: "Juice WRLD",
+  album: "The Light"
+}, {
+  rank: 68,
+  title: "Fast",
+  artist: "Juice WRLD",
+  album: "Death Race For Love (Bonus Tracks)"
+}, {
+  rank: 69,
+  title: "No Handoutz (feat. Yeat)",
+  artist: "Internet Money, Yeat",
+  album: "No Handoutz (feat. Yeat)"
+}, {
+  rank: 70,
+  title: "Titanic",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 71,
+  title: "I Want It",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 72,
+  title: "Lean Wit Me",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 73,
+  title: "1400 / 999 Freestyle",
+  artist: "Trippie Redd, Juice WRLD",
+  album: "A Love Letter To You 3"
+}, {
+  rank: 74,
+  title: "Up Up And Away",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 75,
+  title: "Yacht Club (feat. Juice WRLD)",
+  artist: "Lil Yachty, Juice WRLD",
+  album: "Nuthin' 2 Prove"
+}, {
+  rank: 76,
+  title: "Already Dead",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 77,
+  title: "Strawberry Peels (feat. Young Thug & Gunna)",
+  artist: "Lil Uzi Vert, Gunna, Young Thug",
+  album: "Eternal Atake (Deluxe) - LUV vs...",
+  cover: COVERS.c021
+}, {
+  rank: 78,
+  title: "Heavy stunts (with Don Toliver)",
+  artist: "Yeat, Don Toliver",
+  album: "King tonka",
+  cover: COVERS.c032
+}, {
+  rank: 79,
+  title: "Scared Of Love",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 80,
+  title: "Fighting Demons",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 81,
+  title: "My wrist (with Young Thug)",
+  artist: "Yeat, Young Thug",
+  album: "My wrist (with Young Thug)"
+}, {
+  rank: 82,
+  title: "POP OUT",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 83,
+  title: "MOJO JOJO",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 84,
+  title: "No Issue",
+  artist: "Future, Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 85,
+  title: "Wake Up! (feat. Juice WRLD)",
+  artist: "Ski Mask The Slump God, Juice WRLD",
+  album: "11th Dimension"
+}, {
+  rank: 86,
+  title: "Hurt Me",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 87,
+  title: "Burn",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 88,
+  title: "KNIGHT CRAWLER (feat. Juice WRLD)",
+  artist: "Trippie Redd, Juice WRLD",
+  album: "MANSION MUSIK"
+}, {
+  rank: 89,
+  title: "Demons and Angels (feat. Juice WRLD)",
+  artist: "A Boogie Wit da Hoodie, Juice WRLD",
+  album: "Hoodie SZN"
+}, {
+  rank: 90,
+  title: "Roses (with Juice WRLD feat. Brendon Urie)",
+  artist: "benny blanco, Juice WRLD, Brendon Urie",
+  album: "Roses"
+}, {
+  rank: 91,
+  title: "Let Me Know (I Wonder Why Freestyle)",
+  artist: "Juice WRLD",
+  album: "Let Me Know (I Wonder Why Freestyle)"
+}, {
+  rank: 92,
+  title: "Jocelyn Flores",
+  artist: "XXXTENTACION",
+  album: "17"
+}, {
+  rank: 93,
+  title: "Jus bëtter",
+  artist: "Yeat",
+  album: "2 Alivë"
+}, {
+  rank: 94,
+  title: "GO (feat. Juice WRLD)",
+  artist: "The Kid LAROI, Juice WRLD",
+  album: "F*CK LOVE"
+}, {
+  rank: 95,
+  title: "Man Of The Year",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 96,
+  title: "Hard Work Pays Off",
+  artist: "Future, Juice WRLD",
+  album: "WOD"
+}, {
+  rank: 97,
+  title: "I Write Sins Not Tragedies",
+  artist: "Panic! At The Disco",
+  album: "A Fever You Can't Sweat Out"
+}, {
+  rank: 98,
+  title: "Hot (Remix) [feat. Gunna and Travis Scott]",
+  artist: "Young Thug, Travis Scott, Gunna",
+  album: "So Much Fun (Deluxe)"
+}, {
+  rank: 99,
+  title: "I Think I'm OKAY (with YUNGBLUD & Travis Barker)",
+  artist: "mgk, YUNGBLUD, Travis Barker",
+  album: "Hotel Diablo"
+}, {
+  rank: 100,
+  title: "I'll Be Fine",
+  artist: "Juice WRLD",
+  album: "Goodbye & Good Riddance"
+}, {
+  rank: 101,
+  title: "Wishing Well",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 102,
+  title: "Who Shot Cupid?",
+  artist: "Juice WRLD",
+  album: "Death Race For Love"
+}, {
+  rank: 103,
+  title: "MoshPit (feat. Juice WRLD)",
+  artist: "Kodak Black, Juice WRLD",
+  album: "Dying to Live"
+}, {
+  rank: 104,
+  title: "Rockstar In His Prime",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 105,
+  title: "Feline (with Polo G & Trippie Redd)",
+  artist: "Juice WRLD, Polo G, Trippie Redd",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 106,
+  title: "Doom",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 107,
+  title: "You Wouldn't Understand",
+  artist: "Juice WRLD",
+  album: "Fighting Demons (Deluxe)"
+}, {
+  rank: 108,
+  title: "FINE SHIT",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 109,
+  title: "PHILLY (with Travis Scott)",
+  artist: "Playboi Carti, Travis Scott",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 110,
+  title: "RADAR",
+  artist: "Playboi Carti",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 111,
+  title: "Rich And Blind",
+  artist: "Juice WRLD",
+  album: "Rich And Blind"
+}, {
+  rank: 112,
+  title: "Unbothered",
+  artist: "Ski Mask The Slump God",
+  album: "STOKELEY"
+}, {
+  rank: 113,
+  title: "Ring Ring (with Rvssian feat. Clever)",
+  artist: "Juice WRLD, Rvssian, Clever",
+  album: "Death Race For Love"
+}, {
+  rank: 114,
+  title: "Costa Rica (feat. The Kid LAROI)",
+  artist: "Bankrol Hayden, The Kid LAROI",
+  album: "Pain is Temporary"
+}, {
+  rank: 115,
+  title: "concert for aliens",
+  artist: "mgk",
+  album: "Tickets To My Downfall"
+}, {
+  rank: 116,
+  title: "Talk 2 God",
+  artist: "Yeat",
+  album: "4L"
+}, {
+  rank: 117,
+  title: "CRUSH (with Travis Scott)",
+  artist: "Playboi Carti, Travis Scott",
+  album: "MUSIC",
+  cover: COVERS.c036
+}, {
+  rank: 118,
+  title: "The Bigger Picture",
+  artist: "Lil Baby",
+  album: "The Bigger Picture"
+}, {
+  rank: 119,
+  title: "Can't Die",
+  artist: "Juice WRLD",
+  album: "Legends Never Die",
+  cover: COVERS.c034
+}, {
+  rank: 120,
+  title: "HUMBLE.",
+  artist: "Kendrick Lamar",
+  album: "DAMN."
+}];
 
 // ── AOTY ────────────────────────────────────────────
-const AOTY_RATED = [
-  {num:1,title:"Octane",artist:"Don Toliver",coverKey:"c043",date:"Jan 30",songs:18,rating:"9.5",top5:["Body","E85","Excavator","Rendezvous","Opposite"]},
-  {num:2,title:"Before I Forget",artist:"The Kid LAROI",date:"Jan 9",coverKey:"c007",songs:15,rating:"9",top5:["A Perfect World","July","Rather Be","Never Came Back","Private"],deluxe:{date:"Apr 24",songs:9,rating:"9.5",notes:"8/9 listened",top5:["I Condemn","Back 2 Love","Weakest Feeling","Pieces","Dying On This Hill"]}},
-  {num:3,title:"The Fall-Off",artist:"J. Cole",coverKey:"c048",date:"Feb 6",songs:24,rating:"8.5",disc1:["Two Six","The Let Out","Drum n Bass","Poor Thang","Run A Train"],disc2:["The Fall-Off is Inevitable","Old Dog","Quik Stop","I Love Her Again","Man Up Above"]},
-  {num:4,title:"CA$INO",artist:"Baby Keem",coverKey:"c014",date:"Feb 20",songs:11,rating:"8",top5:["Circus Circus Freestyle","Ca$ino","House Money","I am not a Lyricist","No Security"]},
-  {num:5,title:"Iceman",artist:"Drake",coverKey:"c057",date:"May 15",rating:"7.5",top5:["Shabang","National Treasures","What Did I Miss?","Dust","2 Hard 4 The Radio"]},
-  {num:6,title:"Don't Be Dumb",artist:"A$AP Rocky",coverKey:"c018",date:"Jan 16",songs:17,rating:"7",top5:[]},
-  {num:7,title:"It's Us Vol. 2",artist:"Concrete Boys",coverKey:"c030",date:"Feb 27",songs:17,rating:"6.5",notes:"first listen",top5:[]},
-  {num:8,title:"ADL",artist:"Yeat",coverKey:"c001",date:"Mar 27",songs:21,rating:"7.5",notes:"15.5/21 listened",top5:["Griddlë","Face The Flamë","Liv Likë Dis","Tallër","Silk Facë"]},
-  {num:9,title:"BULLY",artist:"Kanye West",coverKey:"c013",date:"Mar 28",songs:18,rating:"2.5",notes:"5/18 listened",top5:[]},
-];
-const AOTY_UNRATED = [
-  {num:11,title:"Slime Cry",artist:"NBA YoungBoy",coverKey:"c047",date:"Jan 16",songs:30},
-  {num:12,title:"BE MORE GRATEFUL",artist:"DaBaby",coverKey:"c005",date:"Jan 30",songs:23},
-  {num:13,title:"Be Very Afraid, Vol. 1",artist:"CHASE B",coverKey:"c006",date:"Feb 27"},
-  {num:14,title:"Monica",artist:"Jack Harlow",coverKey:"c041",date:"Mar 13"},
-  {num:15,title:"ALL ROADS LEAD HOME EP",artist:"Central Cee",coverKey:"c003",date:"Mar 27"},
-  {num:16,title:"Birthday Blizzard '26",artist:"J. Cole",coverKey:"c009",date:"TBA"},
-  {num:17,title:"HABIBTI",artist:"Drake",coverKey:"c025",date:"May 15"},
-  {num:18,title:"MAID OF HONOUR",artist:"Drake",coverKey:"c039",date:"May 15"},
-];
-const AOTY_UPCOMING = [
-  {num:21,title:"Baby Boi",artist:"Playboi Carti",date:"TBA"},
-  {num:22,title:"Untitled",artist:"Travis Scott",date:"TBA"},
-  {num:23,title:"Untitled Collab",artist:"Cactus Jack x Ye",date:"TBA"},
-  {num:24,title:"Untitled",artist:"Kendrick Lamar",date:"TBA"},
-  {num:25,title:"The Real Me",artist:"Future",date:"TBA"},
-  {num:26,title:"God Doesn't Like Ugly",artist:"JID & Metro Boomin",date:"TBA"},
-  {num:27,title:"Untitled",artist:"Young Thug",date:"TBA"},
-  {num:28,title:"Untitled",artist:"Lil Uzi Vert",date:"TBA"},
-  {num:29,title:"Untitled",artist:"Tyler, The Creator",date:"TBA"},
-  {num:30,title:"TBA Collab",artist:"Gunna & Offset",date:"TBA"},
-];
+const AOTY_RATED = [{
+  num: 1,
+  title: "Octane",
+  artist: "Don Toliver",
+  coverKey: "c043",
+  date: "Jan 30",
+  songs: 18,
+  rating: "9.5",
+  top5: ["Body", "E85", "Excavator", "Rendezvous", "Opposite"]
+}, {
+  num: 2,
+  title: "Before I Forget",
+  artist: "The Kid LAROI",
+  date: "Jan 9",
+  coverKey: "c007",
+  songs: 15,
+  rating: "9",
+  top5: ["A Perfect World", "July", "Rather Be", "Never Came Back", "Private"],
+  deluxe: {
+    date: "Apr 24",
+    songs: 9,
+    rating: "9.5",
+    notes: "8/9 listened",
+    top5: ["I Condemn", "Back 2 Love", "Weakest Feeling", "Pieces", "Dying On This Hill"]
+  }
+}, {
+  num: 3,
+  title: "The Fall-Off",
+  artist: "J. Cole",
+  coverKey: "c048",
+  date: "Feb 6",
+  songs: 24,
+  rating: "8.5",
+  disc1: ["Two Six", "The Let Out", "Drum n Bass", "Poor Thang", "Run A Train"],
+  disc2: ["The Fall-Off is Inevitable", "Old Dog", "Quik Stop", "I Love Her Again", "Man Up Above"]
+}, {
+  num: 4,
+  title: "CA$INO",
+  artist: "Baby Keem",
+  coverKey: "c014",
+  date: "Feb 20",
+  songs: 11,
+  rating: "8",
+  top5: ["Circus Circus Freestyle", "Ca$ino", "House Money", "I am not a Lyricist", "No Security"]
+}, {
+  num: 5,
+  title: "Iceman",
+  artist: "Drake",
+  coverKey: "c057",
+  date: "May 15",
+  rating: "7.5",
+  top5: ["Shabang", "National Treasures", "What Did I Miss?", "Dust", "2 Hard 4 The Radio"]
+}, {
+  num: 6,
+  title: "Don't Be Dumb",
+  artist: "A$AP Rocky",
+  coverKey: "c018",
+  date: "Jan 16",
+  songs: 17,
+  rating: "7",
+  top5: []
+}, {
+  num: 7,
+  title: "It's Us Vol. 2",
+  artist: "Concrete Boys",
+  coverKey: "c030",
+  date: "Feb 27",
+  songs: 17,
+  rating: "6.5",
+  notes: "first listen",
+  top5: []
+}, {
+  num: 8,
+  title: "ADL",
+  artist: "Yeat",
+  coverKey: "c001",
+  date: "Mar 27",
+  songs: 21,
+  rating: "7.5",
+  notes: "15.5/21 listened",
+  top5: ["Griddlë", "Face The Flamë", "Liv Likë Dis", "Tallër", "Silk Facë"]
+}, {
+  num: 9,
+  title: "BULLY",
+  artist: "Kanye West",
+  coverKey: "c013",
+  date: "Mar 28",
+  songs: 18,
+  rating: "2.5",
+  notes: "5/18 listened",
+  top5: []
+}];
+const AOTY_UNRATED = [{
+  num: 11,
+  title: "Slime Cry",
+  artist: "NBA YoungBoy",
+  coverKey: "c047",
+  date: "Jan 16",
+  songs: 30
+}, {
+  num: 12,
+  title: "BE MORE GRATEFUL",
+  artist: "DaBaby",
+  coverKey: "c005",
+  date: "Jan 30",
+  songs: 23
+}, {
+  num: 13,
+  title: "Be Very Afraid, Vol. 1",
+  artist: "CHASE B",
+  coverKey: "c006",
+  date: "Feb 27"
+}, {
+  num: 14,
+  title: "Monica",
+  artist: "Jack Harlow",
+  coverKey: "c041",
+  date: "Mar 13"
+}, {
+  num: 15,
+  title: "ALL ROADS LEAD HOME EP",
+  artist: "Central Cee",
+  coverKey: "c003",
+  date: "Mar 27"
+}, {
+  num: 16,
+  title: "Birthday Blizzard '26",
+  artist: "J. Cole",
+  coverKey: "c009",
+  date: "TBA"
+}, {
+  num: 17,
+  title: "HABIBTI",
+  artist: "Drake",
+  coverKey: "c025",
+  date: "May 15"
+}, {
+  num: 18,
+  title: "MAID OF HONOUR",
+  artist: "Drake",
+  coverKey: "c039",
+  date: "May 15"
+}];
+const AOTY_UPCOMING = [{
+  num: 21,
+  title: "Baby Boi",
+  artist: "Playboi Carti",
+  date: "TBA"
+}, {
+  num: 22,
+  title: "Untitled",
+  artist: "Travis Scott",
+  date: "TBA"
+}, {
+  num: 23,
+  title: "Untitled Collab",
+  artist: "Cactus Jack x Ye",
+  date: "TBA"
+}, {
+  num: 24,
+  title: "Untitled",
+  artist: "Kendrick Lamar",
+  date: "TBA"
+}, {
+  num: 25,
+  title: "The Real Me",
+  artist: "Future",
+  date: "TBA"
+}, {
+  num: 26,
+  title: "God Doesn't Like Ugly",
+  artist: "JID & Metro Boomin",
+  date: "TBA"
+}, {
+  num: 27,
+  title: "Untitled",
+  artist: "Young Thug",
+  date: "TBA"
+}, {
+  num: 28,
+  title: "Untitled",
+  artist: "Lil Uzi Vert",
+  date: "TBA"
+}, {
+  num: 29,
+  title: "Untitled",
+  artist: "Tyler, The Creator",
+  date: "TBA"
+}, {
+  num: 30,
+  title: "TBA Collab",
+  artist: "Gunna & Offset",
+  date: "TBA"
+}];
 
 // ── UNDERGROUND ──────────────────────────────────────
-const UG_RATED = [
-  {num:1,title:"Crash Dummy EP",artist:"PlaqueBoyMax (PBM)",coverKey:"c015",rating:"8",notes:"4/6 listened",top5:["ELASTIBOY","BREAK THE BANK","GET OFF ME","BAD BITCH ADDICTION","DIFFERENT BAG"]},
-  {num:2,title:"Big Country",artist:"Sosocamo",coverKey:"c008",date:"Feb 27",songs:15,rating:"7",notes:"first listen",top5:[]},
-  {num:3,title:"n0rth4evr",artist:"North West",coverKey:"c058",date:"May 1",rating:"0",notes:"0/6 listened",top5:[]},
-  {num:4,title:"Half Blood",artist:"Slayr",date:"Mar 5",coverKey:"c060",rating:"9",top5:[],bloodluxe:{date:"Mar 6",songs:10,rating:"9.5",coverKey:"c026"}},
-  {num:5,title:"Dr*gs R Bad",artist:"Lucki",coverKey:"c019",date:"May 15",songs:26,rating:"3.5",top5:[]},
-];
-const UG_UNRATED = [
-  {num:2,title:"e.t.d.s.",artist:"IDK",coverKey:"c056",date:"Jan 23"},
-  {num:3,title:"Part 3",artist:"42 Dugg",coverKey:"c045",date:"Jan 23"},
-  {num:4,title:"Baby Whoa 2 (Deluxe)",artist:"Glokk40Spaz",coverKey:"c004",date:"Jan 30",songs:31},
-  {num:5,title:"Not One Of Them",artist:"Hunxho",coverKey:"c042",date:"Feb 6"},
-  {num:6,title:"Mad Metal",artist:"Mario Judah",coverKey:"c038",date:"Feb 7"},
-  {num:7,title:"Designer Junkie",artist:"Sk8star",coverKey:"c017",date:"Feb 11",songs:20},
-  {num:8,title:"KICKOFF EP",artist:"Autumn!",coverKey:"c031",date:"Feb 19"},
-  {num:9,title:"Laying Da Walkdown",artist:"Lil Double 0",coverKey:"c033",date:"Feb 20",songs:16},
-  {num:10,title:"Out On Bond Again",artist:"BabyTron",coverKey:"c044",date:"Feb 27"},
-  {num:12,title:"SAVIOR",artist:"1300SAINT",coverKey:"c046",date:"Mar 6"},
-  {num:13,title:"6WA",artist:"BigXthePlug & 600 Ent",coverKey:"c000",date:"Mar 20"},
-  {num:14,title:"Fully Loaded",artist:"Che",coverKey:"c024",date:"Apr 1",notes:"SoundCloud"},
-  {num:15,title:"Emotions",artist:"9V (Nine Vicious)",coverKey:"c020",date:"Apr 3"},
-  {num:16,title:"Mayhem",artist:"Slump6s",coverKey:"c040",date:"Apr 3"},
-  {num:17,title:"UY SCUTI BØYZ",artist:"Tezzus & diamond*",coverKey:"c053",date:"Apr 17",songs:18,notes:"Young Thug affiliated"},
-  {num:18,title:"MAD DOGG: The Mixtape Vol. 1",artist:"Wallie the Sensei",coverKey:"c037",date:"Apr 21"},
-  {num:19,title:"IT'S BEEN AWFUL",artist:"Isaiah Rashad",coverKey:"c029",date:"May 1"},
-  {num:20,title:"the rumors are true",artist:"DC The Don",coverKey:"c059",date:"May 1"},
-  {num:21,title:"DAYSB4BAD",artist:"Lucki",coverKey:"c016",date:"May 1"},
-  {num:22,title:"Body of Work",artist:"Edward Skeletrix",coverKey:"c011",date:"May 1"},
-  {num:23,title:"BULLDAWG",artist:"Kenny Mason",coverKey:"c012",date:"May 12"},
-  {num:25,title:"Love Is The New Gangsta",artist:"6LACK",date:"May 22",songs:15},
-  {num:26,title:"Demon Heart Radio",artist:"ApolloRed1",date:"May 2026"},
-  {num:27,title:"The Resurrection",artist:"Tezzus",date:"Jun 8",songs:8},
-  {num:28,title:"It Is What It Is",artist:"Dro Kenji",date:"Jun 12",songs:15},
-];
-const UG_UPCOMING = [
-  {num:28,title:"Color Me Green",artist:"Rich Amiri",date:"Jun 2026"},
-  {num:29,title:"Fabula Nova",artist:"Slayr",date:"Jun 2026"},
-  {num:30,title:"The Xpreiment",artist:"Ken Carson",date:"Jul 23"},
-  {num:31,title:"Drop Dead Gorgeous (DDG)",artist:"Destroy Lonely",date:"Nov 2026"},
-  {num:32,title:"BADMAN",artist:"Summrs",date:"TBA"},
-  {num:33,title:"Nocturnal",artist:"OsamaSon",date:"TBA"},
-  {num:34,title:"Psykotic (Deluxe)",artist:"OsamaSon",date:"TBA"},
-  {num:36,title:"Untitled Collab Mixtape",artist:"Ken Carson x Destroy Lonely",date:"TBA"},
-  {num:37,title:"Heaven Offline",artist:"DC THE DON",date:"TBA"},
-  {num:38,title:"Valedictorian 3",artist:"Ian",date:"TBA"},
-  {num:39,title:"Seventh Heaven",artist:"Slayr",date:"TBA"},
-  {num:40,title:"Sex Money Power",artist:"9V (Nine Vicious)",date:"TBA"},
-  {num:41,title:"Spaz&B 2",artist:"Glokk40Spaz",date:"TBA"},
-  {num:42,title:"NEON",artist:"Bktherula",date:"TBA"},
-  {num:43,title:"Solitude In Silence",artist:"midwxst",date:"TBA"},
-  {num:44,title:"CANINE",artist:"EsDeeKid",date:"TBA"},
-  {num:45,title:"KILL YOUR IDOLS",artist:"bleood",date:"TBA"},
-  {num:46,title:"Mad Dogg",artist:"Wallie the Sensei",date:"TBA"},
-  {num:47,title:"TBA Collab",artist:"St. Lunatics & Metro Boomin",date:"TBA"},
-  {num:48,title:"Lost Files 5",artist:"Ken Carson",date:"TBA"},
-];
+const UG_RATED = [{
+  num: 1,
+  title: "Crash Dummy EP",
+  artist: "PlaqueBoyMax (PBM)",
+  coverKey: "c015",
+  rating: "8",
+  notes: "4/6 listened",
+  top5: ["ELASTIBOY", "BREAK THE BANK", "GET OFF ME", "BAD BITCH ADDICTION", "DIFFERENT BAG"]
+}, {
+  num: 2,
+  title: "Big Country",
+  artist: "Sosocamo",
+  coverKey: "c008",
+  date: "Feb 27",
+  songs: 15,
+  rating: "7",
+  notes: "first listen",
+  top5: []
+}, {
+  num: 3,
+  title: "n0rth4evr",
+  artist: "North West",
+  coverKey: "c058",
+  date: "May 1",
+  rating: "0",
+  notes: "0/6 listened",
+  top5: []
+}, {
+  num: 4,
+  title: "Half Blood",
+  artist: "Slayr",
+  date: "Mar 5",
+  coverKey: "c060",
+  rating: "9",
+  top5: [],
+  bloodluxe: {
+    date: "Mar 6",
+    songs: 10,
+    rating: "9.5",
+    coverKey: "c026"
+  }
+}, {
+  num: 5,
+  title: "Dr*gs R Bad",
+  artist: "Lucki",
+  coverKey: "c019",
+  date: "May 15",
+  songs: 26,
+  rating: "3.5",
+  top5: []
+}];
+const UG_UNRATED = [{
+  num: 2,
+  title: "e.t.d.s.",
+  artist: "IDK",
+  coverKey: "c056",
+  date: "Jan 23"
+}, {
+  num: 3,
+  title: "Part 3",
+  artist: "42 Dugg",
+  coverKey: "c045",
+  date: "Jan 23"
+}, {
+  num: 4,
+  title: "Baby Whoa 2 (Deluxe)",
+  artist: "Glokk40Spaz",
+  coverKey: "c004",
+  date: "Jan 30",
+  songs: 31
+}, {
+  num: 5,
+  title: "Not One Of Them",
+  artist: "Hunxho",
+  coverKey: "c042",
+  date: "Feb 6"
+}, {
+  num: 6,
+  title: "Mad Metal",
+  artist: "Mario Judah",
+  coverKey: "c038",
+  date: "Feb 7"
+}, {
+  num: 7,
+  title: "Designer Junkie",
+  artist: "Sk8star",
+  coverKey: "c017",
+  date: "Feb 11",
+  songs: 20
+}, {
+  num: 8,
+  title: "KICKOFF EP",
+  artist: "Autumn!",
+  coverKey: "c031",
+  date: "Feb 19"
+}, {
+  num: 9,
+  title: "Laying Da Walkdown",
+  artist: "Lil Double 0",
+  coverKey: "c033",
+  date: "Feb 20",
+  songs: 16
+}, {
+  num: 10,
+  title: "Out On Bond Again",
+  artist: "BabyTron",
+  coverKey: "c044",
+  date: "Feb 27"
+}, {
+  num: 12,
+  title: "SAVIOR",
+  artist: "1300SAINT",
+  coverKey: "c046",
+  date: "Mar 6"
+}, {
+  num: 13,
+  title: "6WA",
+  artist: "BigXthePlug & 600 Ent",
+  coverKey: "c000",
+  date: "Mar 20"
+}, {
+  num: 14,
+  title: "Fully Loaded",
+  artist: "Che",
+  coverKey: "c024",
+  date: "Apr 1",
+  notes: "SoundCloud"
+}, {
+  num: 15,
+  title: "Emotions",
+  artist: "9V (Nine Vicious)",
+  coverKey: "c020",
+  date: "Apr 3"
+}, {
+  num: 16,
+  title: "Mayhem",
+  artist: "Slump6s",
+  coverKey: "c040",
+  date: "Apr 3"
+}, {
+  num: 17,
+  title: "UY SCUTI BØYZ",
+  artist: "Tezzus & diamond*",
+  coverKey: "c053",
+  date: "Apr 17",
+  songs: 18,
+  notes: "Young Thug affiliated"
+}, {
+  num: 18,
+  title: "MAD DOGG: The Mixtape Vol. 1",
+  artist: "Wallie the Sensei",
+  coverKey: "c037",
+  date: "Apr 21"
+}, {
+  num: 19,
+  title: "IT'S BEEN AWFUL",
+  artist: "Isaiah Rashad",
+  coverKey: "c029",
+  date: "May 1"
+}, {
+  num: 20,
+  title: "the rumors are true",
+  artist: "DC The Don",
+  coverKey: "c059",
+  date: "May 1"
+}, {
+  num: 21,
+  title: "DAYSB4BAD",
+  artist: "Lucki",
+  coverKey: "c016",
+  date: "May 1"
+}, {
+  num: 22,
+  title: "Body of Work",
+  artist: "Edward Skeletrix",
+  coverKey: "c011",
+  date: "May 1"
+}, {
+  num: 23,
+  title: "BULLDAWG",
+  artist: "Kenny Mason",
+  coverKey: "c012",
+  date: "May 12"
+}, {
+  num: 25,
+  title: "Love Is The New Gangsta",
+  artist: "6LACK",
+  date: "May 22",
+  songs: 15
+}, {
+  num: 26,
+  title: "Demon Heart Radio",
+  artist: "ApolloRed1",
+  date: "May 2026"
+}, {
+  num: 27,
+  title: "The Resurrection",
+  artist: "Tezzus",
+  date: "Jun 8",
+  songs: 8
+}, {
+  num: 28,
+  title: "It Is What It Is",
+  artist: "Dro Kenji",
+  date: "Jun 12",
+  songs: 15
+}];
+const UG_UPCOMING = [{
+  num: 28,
+  title: "Color Me Green",
+  artist: "Rich Amiri",
+  date: "Jun 2026"
+}, {
+  num: 29,
+  title: "Fabula Nova",
+  artist: "Slayr",
+  date: "Jun 2026"
+}, {
+  num: 30,
+  title: "The Xpreiment",
+  artist: "Ken Carson",
+  date: "Jul 23"
+}, {
+  num: 31,
+  title: "Drop Dead Gorgeous (DDG)",
+  artist: "Destroy Lonely",
+  date: "Nov 2026"
+}, {
+  num: 32,
+  title: "BADMAN",
+  artist: "Summrs",
+  date: "TBA"
+}, {
+  num: 33,
+  title: "Nocturnal",
+  artist: "OsamaSon",
+  date: "TBA"
+}, {
+  num: 34,
+  title: "Psykotic (Deluxe)",
+  artist: "OsamaSon",
+  date: "TBA"
+}, {
+  num: 36,
+  title: "Untitled Collab Mixtape",
+  artist: "Ken Carson x Destroy Lonely",
+  date: "TBA"
+}, {
+  num: 37,
+  title: "Heaven Offline",
+  artist: "DC THE DON",
+  date: "TBA"
+}, {
+  num: 38,
+  title: "Valedictorian 3",
+  artist: "Ian",
+  date: "TBA"
+}, {
+  num: 39,
+  title: "Seventh Heaven",
+  artist: "Slayr",
+  date: "TBA"
+}, {
+  num: 40,
+  title: "Sex Money Power",
+  artist: "9V (Nine Vicious)",
+  date: "TBA"
+}, {
+  num: 41,
+  title: "Spaz&B 2",
+  artist: "Glokk40Spaz",
+  date: "TBA"
+}, {
+  num: 42,
+  title: "NEON",
+  artist: "Bktherula",
+  date: "TBA"
+}, {
+  num: 43,
+  title: "Solitude In Silence",
+  artist: "midwxst",
+  date: "TBA"
+}, {
+  num: 44,
+  title: "CANINE",
+  artist: "EsDeeKid",
+  date: "TBA"
+}, {
+  num: 45,
+  title: "KILL YOUR IDOLS",
+  artist: "bleood",
+  date: "TBA"
+}, {
+  num: 46,
+  title: "Mad Dogg",
+  artist: "Wallie the Sensei",
+  date: "TBA"
+}, {
+  num: 47,
+  title: "TBA Collab",
+  artist: "St. Lunatics & Metro Boomin",
+  date: "TBA"
+}, {
+  num: 48,
+  title: "Lost Files 5",
+  artist: "Ken Carson",
+  date: "TBA"
+}];
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
@@ -427,426 +1649,1126 @@ function App() {
   const [artistSort, setArtistSort] = useState("minutes");
   const [songPage, setSongPage] = useState(0);
   const PER = 25;
-
-  const yearData = [
-    {year:"2020",mins:6513},{year:"2021",mins:23134},{year:"2022",mins:13849},
-    {year:"2023",mins:27513},{year:"2024",mins:34992},{year:"2025",mins:42586},
-    {year:"2026",mins:3672,partial:true},
-  ];
-  const maxMins = Math.max(...yearData.map(d=>d.mins));
-
-  const artistsByMinutes = [
-    {rank:1,artist:"Juice WRLD",minutes:19768,plays:6951},
-    {rank:2,artist:"Yeat",minutes:12711,plays:4914},
-    {rank:3,artist:"Future",minutes:5765,plays:2001},
-    {rank:4,artist:"Playboi Carti",minutes:4562,plays:1834},
-    {rank:5,artist:"Don Toliver",minutes:4529,plays:1584},
-    {rank:6,artist:"Travis Scott",minutes:4224,plays:1249},
-    {rank:7,artist:"Lil Uzi Vert",minutes:4040,plays:1407},
-    {rank:8,artist:"Ski Mask The Slump God",minutes:3468,plays:1598},
-    {rank:9,artist:"Lil Baby",minutes:3434,plays:1316},
-    {rank:10,artist:"XXXTENTACION",minutes:3130,plays:1540},
-    {rank:11,artist:"Eminem",minutes:3114,plays:null},
-    {rank:12,artist:"mgk",minutes:2832,plays:1154},
-    {rank:13,artist:"The Kid LAROI",minutes:2647,plays:1114},
-    {rank:14,artist:"Frank Ocean",minutes:2603,plays:null},
-    {rank:15,artist:"Lil Yachty",minutes:2563,plays:1006},
-  ];
-  const sorted = [...artistsByMinutes].sort((a,b)=>artistSort==="minutes"?b.minutes-a.minutes:(b.plays||0)-(a.plays||0)).map((a,i)=>({...a,rank:i+1}));
-
-  const pageSongs = TOP120.slice(songPage*PER,(songPage+1)*PER);
-  const totalPages = Math.ceil(TOP120.length/PER);
-
+  const yearData = [{
+    year: "2020",
+    mins: 6513
+  }, {
+    year: "2021",
+    mins: 23134
+  }, {
+    year: "2022",
+    mins: 13849
+  }, {
+    year: "2023",
+    mins: 27513
+  }, {
+    year: "2024",
+    mins: 34992
+  }, {
+    year: "2025",
+    mins: 42586
+  }, {
+    year: "2026",
+    mins: 3672,
+    partial: true
+  }];
+  const maxMins = Math.max(...yearData.map(d => d.mins));
+  const artistsByMinutes = [{
+    rank: 1,
+    artist: "Juice WRLD",
+    minutes: 19768,
+    plays: 6951
+  }, {
+    rank: 2,
+    artist: "Yeat",
+    minutes: 12711,
+    plays: 4914
+  }, {
+    rank: 3,
+    artist: "Future",
+    minutes: 5765,
+    plays: 2001
+  }, {
+    rank: 4,
+    artist: "Playboi Carti",
+    minutes: 4562,
+    plays: 1834
+  }, {
+    rank: 5,
+    artist: "Don Toliver",
+    minutes: 4529,
+    plays: 1584
+  }, {
+    rank: 6,
+    artist: "Travis Scott",
+    minutes: 4224,
+    plays: 1249
+  }, {
+    rank: 7,
+    artist: "Lil Uzi Vert",
+    minutes: 4040,
+    plays: 1407
+  }, {
+    rank: 8,
+    artist: "Ski Mask The Slump God",
+    minutes: 3468,
+    plays: 1598
+  }, {
+    rank: 9,
+    artist: "Lil Baby",
+    minutes: 3434,
+    plays: 1316
+  }, {
+    rank: 10,
+    artist: "XXXTENTACION",
+    minutes: 3130,
+    plays: 1540
+  }, {
+    rank: 11,
+    artist: "Eminem",
+    minutes: 3114,
+    plays: null
+  }, {
+    rank: 12,
+    artist: "mgk",
+    minutes: 2832,
+    plays: 1154
+  }, {
+    rank: 13,
+    artist: "The Kid LAROI",
+    minutes: 2647,
+    plays: 1114
+  }, {
+    rank: 14,
+    artist: "Frank Ocean",
+    minutes: 2603,
+    plays: null
+  }, {
+    rank: 15,
+    artist: "Lil Yachty",
+    minutes: 2563,
+    plays: 1006
+  }];
+  const sorted = [...artistsByMinutes].sort((a, b) => artistSort === "minutes" ? b.minutes - a.minutes : (b.plays || 0) - (a.plays || 0)).map((a, i) => ({
+    ...a,
+    rank: i + 1
+  }));
+  const pageSongs = TOP120.slice(songPage * PER, (songPage + 1) * PER);
+  const totalPages = Math.ceil(TOP120.length / PER);
   const artistCounts = {};
-  TOP120.forEach(s=>{const m=s.artist.split(",")[0].trim();artistCounts[m]=(artistCounts[m]||0)+1;});
-  const topPA = Object.entries(artistCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
-
-  return (
-    <div style={{background:"#050505",minHeight:"100vh",color:"#e0e0e0",fontFamily:"'DM Mono','Fira Code',monospace"}}>
-      {/* Header */}
-      <div style={{borderBottom:"1px solid #0f0f0f",padding:"28px 40px 22px",background:"#070707"}}>
-        <div style={{display:"flex",alignItems:"flex-end",gap:10,flexWrap:"wrap",marginBottom:14}}>
-          <div>
-            <div style={{fontSize:9,letterSpacing:4,color:"#00e5a0",textTransform:"uppercase",marginBottom:3}}>Master Stats</div>
-            <div style={{fontSize:30,fontWeight:800,color:"#fff",letterSpacing:-0.5}}>Overryde113</div>
-          </div>
-          <div style={{marginBottom:3,color:"#282828",fontSize:11}}>Aug 2020 – May 2026</div>
-        </div>
-        <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-          {SECTIONS.map(s=>(
-            <button key={s} onClick={()=>setTab(s)} style={{background:tab===s?"#00e5a0":"transparent",color:tab===s?"#000":"#aaa",border:tab===s?"none":"1px solid #181818",borderRadius:7,padding:"8px 18px",fontSize:13,fontWeight:tab===s?800:400,cursor:"pointer",fontFamily:"inherit"}}>
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{padding:"28px 40px",maxWidth:1400}}>
-
-        {/* ── OVERVIEW ── */}
-        {tab==="Overview" && (
-          <div>
-            <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
-              <SC label="Spotify Hours" value="2,537h" sub="Aug 2020 – Oct 2025"/>
-              <SC label="Total Streams" value="87,619" sub="entries logged"/>
-              <SC label="Skip Rate" value="35.4%" sub="30,979 skips"/>
-              <SC label="Top Songs List" value="120" sub="Your All-Time Top Songs"/>
-            </div>
-
-            <SH>Year-Over-Year Spotify Listening</SH>
-            {yearData.map(d=><YBar key={d.year} label={d.year} val={d.mins} max={maxMins} partial={d.partial}/>)}
-            <div style={{color:"#282828",fontSize:10,marginTop:2}}>* 2026 partial — streaming data ends Oct 2025</div>
-
-            <SH>All-Time Top 5 (Your Spotify Playlist)</SH>
-            {TOP120.slice(0,5).map(s=><Row key={s.rank} rank={s.rank} left={s.title} accent={s.artist} gold={s.rank===1}/>)}
-
-            <SH>All-Time Top 5 Artists by Minutes</SH>
-            {artistsByMinutes.slice(0,5).map(a=><Row key={a.rank} rank={a.rank} left={a.artist} right={`${a.minutes.toLocaleString()} min`} gold={a.rank===1}/>)}
-
-            <SH>AOTY 2026 — Current Standings</SH>
-            <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-              {AOTY_RATED.map((x,i)=>(
-                <div key={i} style={{background:"#0a0a0a",border:`1px solid ${rc(x.rating)}1e`,borderRadius:7,padding:"9px 12px",flex:"1 1 105px"}}>
-                  <div style={{marginBottom:5}}><RB r={x.rating}/></div>
-                  <div style={{color:"#ddd",fontSize:11,fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.title}</div>
-                  <div style={{color:"#333",fontSize:10,marginTop:1}}>{x.artist}</div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        )}
-
-        {/* ── ALL-TIME TOP SONGS ── */}
-        {tab==="All-Time Top Songs" && (
-          <div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-              <div style={{color:"#aaa",fontSize:11}}>Your All-Time Top Songs playlist · 120 tracks</div>
-              <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                <button onClick={()=>setSongPage(Math.max(0,songPage-1))} disabled={songPage===0}
-                  style={{background:"none",border:"1px solid #1e1e1e",borderRadius:4,color:songPage===0?"#222":"#999",cursor:songPage===0?"default":"pointer",padding:"3px 9px",fontSize:11,fontFamily:"inherit"}}>←</button>
-                <span style={{color:"#aaa",fontSize:11}}>{songPage+1}/{totalPages}</span>
-                <button onClick={()=>setSongPage(Math.min(totalPages-1,songPage+1))} disabled={songPage===totalPages-1}
-                  style={{background:"none",border:"1px solid #1e1e1e",borderRadius:4,color:songPage===totalPages-1?"#222":"#999",cursor:songPage===totalPages-1?"default":"pointer",padding:"3px 9px",fontSize:11,fontFamily:"inherit"}}>→</button>
-              </div>
-            </div>
-            {pageSongs.map(s=>(
-              <div key={s.rank} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",borderRadius:6,background:s.rank<=3?"#0d1a12":"transparent",border:s.rank<=3?"1px solid #1a3022":"1px solid transparent",marginBottom:3}}>
-                <span style={{color:s.rank<=10?"#00e5a0":"#aaa",fontSize:10,fontFamily:"monospace",minWidth:24,textAlign:"right",fontWeight:s.rank<=10?800:400}}>{s.rank}</span>
-                <div style={{width:46,height:46,borderRadius:5,background:"#141414",flexShrink:0,overflow:"hidden"}}>
-                  {s.cover && <img src={s.cover} alt="" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>}
-                </div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{color:"#e0e0e0",fontSize:13,fontWeight:600,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.title}</div>
-                  <div style={{color:"#aaa",fontSize:11,marginTop:1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.artist}</div>
-                </div>
-                <div style={{color:"#222",fontSize:10,whiteSpace:"nowrap",maxWidth:120,overflow:"hidden",textOverflow:"ellipsis",textAlign:"right"}}>{s.album}</div>
-              </div>
-            ))}
-
-            <SH>Artist Breakdown — Top 120 Playlist</SH>
-            {topPA.map(([artist,count],i)=>(
-              <div key={artist} style={{display:"flex",alignItems:"center",gap:10,marginBottom:7}}>
-                <span style={{color:"#aaa",fontSize:10,fontFamily:"monospace",minWidth:20,textAlign:"right"}}>{i+1}</span>
-                <div style={{flex:1}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                    <span style={{color:"#ccc",fontSize:12}}>{artist}</span>
-                    <span style={{color:"#00e5a0",fontSize:11,fontFamily:"monospace"}}>{count} tracks</span>
-                  </div>
-                  <div style={{background:"#141414",borderRadius:2,height:4}}>
-                    <div style={{width:`${(count/topPA[0][1])*100}%`,height:"100%",background:"linear-gradient(90deg,#00e5a0,#00b87a)",borderRadius:2}}/>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── SPOTIFY STATS ── */}
-        {tab==="Spotify Stats" && (
-          <div>
-            <SH>Top 15 Artists — All Time &nbsp;<span style={{fontWeight:400}}>
-              <button onClick={()=>setArtistSort("minutes")} style={{background:"none",border:"none",color:artistSort==="minutes"?"#00e5a0":"#333",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>minutes</button>
-              {" / "}
-              <button onClick={()=>setArtistSort("plays")} style={{background:"none",border:"none",color:artistSort==="plays"?"#00e5a0":"#333",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>plays</button>
-            </span></SH>
-            {sorted.map(a=><Row key={a.rank} rank={a.rank} left={a.artist} right={artistSort==="minutes"?`${a.minutes.toLocaleString()} min`:a.plays?`${a.plays.toLocaleString()} plays`:"—"} gold={a.rank===1}/>)}
-
-            <SH>Top 15 Albums — Long Term</SH>
-            {[
-              {rank:1,album:"MUSIC",cover:COVERS.c036,artist:"Playboi Carti"},
-              {rank:2,album:"WHAM (Extended Version)",cover:COVERS.c055,artist:"Lil Baby"},
-              {rank:3,album:"HARDSTONE PSYCHO",artist:"Don Toliver"},
-              {rank:4,album:"Eternal Atake (Deluxe)",artist:"Lil Uzi Vert"},
-              {rank:5,album:"Blonde",cover:COVERS.c010,artist:"Frank Ocean"},
-              {rank:6,album:"The Party Never Ends 2.0",cover:COVERS.c050,artist:"Juice WRLD"},
-              {rank:7,album:"Heaven Or Hell",cover:COVERS.c028,artist:"Don Toliver"},
-              {rank:8,album:"MUSIC - SORRY 4 DA WAIT",artist:"Playboi Carti"},
-              {rank:9,album:"Utopia",cover:COVERS.c054,artist:"Travis Scott"},
-              {rank:10,album:"The Pre-Party",cover:COVERS.c052,artist:"Juice WRLD"},
-              {rank:11,album:"King Tonka",artist:"Yeat"},
-              {rank:12,album:"Love Sick (Deluxe)",artist:"Don Toliver"},
-              {rank:13,album:"Flower Boy",cover:COVERS.c023,artist:"Tyler, The Creator"},
-              {rank:14,album:"ALL RED",cover:COVERS.c002,artist:"Playboi Carti"},
-              {rank:15,album:"The Forever Story (Extended)",cover:COVERS.c049,artist:"JID"},
-            ].map(a=><Row key={a.rank} rank={a.rank} left={a.album} accent={a.artist} gold={a.rank===1}/>)}
-
-            <SH>Top 10 Songs — 2026 So Far <span style={{color:"#aaa",fontWeight:400,fontSize:9,textTransform:"none",letterSpacing:0}}>from streaming history data (ends Oct 2025)</span></SH>
-            {[
-              {rank:1,title:"Body",artist:"Don Toliver",plays:14},
-              {rank:2,title:"Tiramisu",artist:"Don Toliver",plays:13},
-              {rank:3,title:"E85",artist:"Don Toliver",plays:13},
-              {rank:4,title:"ORDER OF PROTECTION",artist:"A$AP Rocky",plays:11},
-              {rank:5,title:"Call Back",artist:"Don Toliver",plays:11},
-              {rank:6,title:"HELICOPTER",artist:"A$AP Rocky",plays:10},
-              {rank:7,title:"PUNK ROCKY",artist:"A$AP Rocky",plays:10},
-              {rank:8,title:"Excavator",artist:"Don Toliver",plays:10},
-              {rank:9,title:"STOLE YA FLOW",artist:"A$AP Rocky",plays:9},
-              {rank:10,title:"Long Way To Calabasas",artist:"Don Toliver",plays:9},
-            ].map(s=><Row key={s.rank} rank={s.rank} left={s.title} accent={s.artist} right={`${s.plays}×`}/>)}
-
-            <SH>Most Skipped Songs (All Time)</SH>
-            {[
-              {skips:68,title:"Costa Rica",artist:"RONNY J ft. Ski Mask"},
-              {skips:56,title:"On tha linë",artist:"Yeat"},
-              {skips:47,title:"Empty",artist:"Juice WRLD"},
-              {skips:47,title:"Lucid Dreams",artist:"Juice WRLD"},
-              {skips:37,title:"Righteous",artist:"Juice WRLD"},
-              {skips:37,title:"Bad Energy",artist:"Juice WRLD"},
-              {skips:37,title:"2 Up",artist:"Yeat"},
-              {skips:35,title:"Ok Kool",artist:"Yeat"},
-              {skips:33,title:"All Girls Are The Same",artist:"Juice WRLD"},
-              {skips:33,title:"Tëslas & Rovers",artist:"Yeat"},
-            ].map((s,i)=><Row key={i} rank={i+1} left={s.title} accent={s.artist} right={`${s.skips}× skipped`}/>)}
-
-            <SH>Top Genres — Long Term</SH>
-            <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-              {["Rap","Rage Rap","Melodic Rap","Emo Rap","Trap","Hip Hop","West Coast Hip Hop","Sexy Drill","Soundtrack","Score","Christian Hip Hop","Drill","Underground Hip Hop","Southern Hip Hop","New York Drill","Chicago Drill","UK Drill","Cloud Rap","Trap Metal"].map((g,i)=>(
-                <span key={i} style={{background:i<6?"#0d1a12":"#0a0a0a",border:`1px solid ${i<6?"#1a3022":"#181818"}`,borderRadius:4,padding:"3px 8px",fontSize:10,color:i<6?"#00e5a0":"#aaa"}}>#{i+1} {g}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── WRAPPED HISTORY ── */}
-        {tab==="Wrapped History" && (
-          <div>
-            <SH>Spotify Wrapped — Year Over Year</SH>
-            <div style={{overflowX:"auto"}}>
-              <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                <thead>
-                  <tr>{["Stat","2022","2023","2024","2025"].map(h=>(
-                    <th key={h} style={{textAlign:"left",padding:"7px 10px",color:"#00e5a0",fontSize:9,letterSpacing:2,textTransform:"uppercase",borderBottom:"1px solid #141414"}}>{h}</th>
-                  ))}</tr>
-                </thead>
-                <tbody>
-                  {[
-                    ["Spotify Minutes","27,560","23,093","28,327","34,845"],
-                    ["Total Artists","—","687","—","822"],
-                    ["Total Albums","—","—","—","91"],
-                    ["Top Artist","Juice WRLD","Juice WRLD","Yeat","Playboi Carti"],
-                    ["Top Artist Min","5,180","5,724","9,677","4,487"],
-                    ["Top Artist Fan%","Top 0.5%","Top 0.5%","—","Top 0.2%"],
-                    ["Top Song","Righteous","SAME ENERGY","ALL RED","Raydar"],
-                    ["Top Song Plays","—","—","100","100"],
-                    ["Top Genre","Rap","Rap","—","Trap"],
-                    ["Top Albums","G&GR · DRFL · LND · Pre-Party · F&JW","—","—","MUSIC — Carti"],
-                    ["Podcast Episodes","55","—","—","—"],
-                    ["Spotify Club","—","—","—","Grit Collective"],
-                  ].map((row,i)=>(
-                    <tr key={i} style={{background:i%2===0?"#080808":"transparent"}}>
-                      {row.map((cell,j)=>(
-                        <td key={j} style={{padding:"7px 10px",color:j===0?"#aaa":"#bbb",borderBottom:"1px solid #0f0f0f",fontSize:j===0?11:12}}>{cell}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <SH>2024 Wrapped — Monthly Timeline</SH>
-            {[
-              {month:"April",desc:"Future, 21 Savage, Juice WRLD. ALL RED on heavy rotation. World Tour (Aquafina), Lightyears."},
-              {month:"June",desc:"Ski Mask The Slump God — 11th Dimension. Wake Up was the move. Left turn from usual lane."},
-              {month:"September",desc:"Back to Yeat — Heavy Stunts (King Tonka). Juice WRLD's The Pre-Party also in rotation."},
-              {month:"November",desc:"Lil Uzi Vert takeover — 727 plays in one month. Homecoming, Low Men, Silly Watch, You Better Move."},
-            ].map((m,i)=>(
-              <div key={i} style={{marginBottom:6,padding:"9px 13px",background:"#0a0a0a",border:"1px solid #161616",borderRadius:8,display:"flex",gap:12,alignItems:"flex-start"}}>
-                <span style={{color:"#00e5a0",fontSize:10,fontWeight:700,minWidth:62,paddingTop:1}}>{m.month}</span>
-                <span style={{color:"#bbb",fontSize:12}}>{m.desc}</span>
-              </div>
-            ))}
-
-            <SH>2025 Wrapped — Monthly Peaks</SH>
-            {[
-              {month:"April",desc:"MUSIC (Playboi Carti) — 467 streams"},
-              {month:"May",desc:"MUSIC (Playboi Carti) — 112 streams"},
-              {month:"September",desc:"Playboi Carti — 80 streams"},
-            ].map((m,i)=>(
-              <div key={i} style={{marginBottom:5,padding:"8px 13px",background:"#0a0a0a",border:"1px solid #161616",borderRadius:8,display:"flex",gap:12}}>
-                <span style={{color:"#00e5a0",fontSize:10,fontWeight:700,minWidth:62}}>{m.month}</span>
-                <span style={{color:"#bbb",fontSize:12}}>{m.desc}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── AOTY 2026 ── */}
-        {tab==="AOTY 2026" && (
-          <div>
-            <div style={{marginBottom:12,padding:"8px 12px",background:"#0a1a12",border:"1px solid #162a1e",borderRadius:7,fontSize:10,color:"#aaa"}}>
-              Tap any rated album to expand top tracks · Rated list sorted by score
-            </div>
-            <SH>Rated</SH>
-            {[...AOTY_RATED].sort((a,b)=>parseFloat(b.rating||0)-parseFloat(a.rating||0)).map((a,idx)=>{
-              if(a.disc1){
-                return <AlbumCard key={a.num} num={a.num} title={a.title} artist={a.artist} rating={a.rating} date={a.date} songs={a.songs} coverKey={a.coverKey}
-                  top5={a.disc1} top5Label="Disc 1" top5b={a.disc2} top5bLabel="Disc 2"/>;
-              }
-              if(a.deluxe){
-                return (
-                  <div key={a.num}>
-                    <AlbumCard num={a.num} title={a.title} artist={a.artist} rating={a.rating} date={a.date} songs={a.songs} notes={a.notes} coverKey={a.coverKey} top5={a.top5} top5Label={a.top5?.some(Boolean)?"Top Tracks":undefined}/>
-                    <div style={{marginLeft:18,marginBottom:5,borderLeft:"2px solid #1a3022",paddingLeft:10}}>
-                      <AlbumCard num="↳" title="Deluxe" artist={`${a.deluxe.songs} songs · ${a.deluxe.date} · ${a.deluxe.notes}`} rating={a.deluxe.rating} coverKey={a.coverKey} top5={a.deluxe.top5} top5Label="Top Tracks"/>
-                    </div>
-                  </div>
-                );
-              }
-              return <AlbumCard key={a.num} num={a.num} title={a.title} artist={a.artist} rating={a.rating} coverKey={a.coverKey}
-                date={a.date} songs={a.songs} notes={a.notes} top5={a.top5} top5Label={a.top5?.some(Boolean)?"Top Tracks":undefined}/>;
-            })}
-            <SH>Unrated</SH>
-            {AOTY_UNRATED.map(a=><SR key={a.num} {...a}/>)}
-            <SH>Upcoming / Rumored</SH>
-            {AOTY_UPCOMING.map(a=><SR key={a.num} {...a}/>)}
-          </div>
-        )}
-
-        {/* ── UNDERGROUND ── */}
-        {tab==="Underground" && (
-          <div>
-            <SH>Rated</SH>
-            {[...UG_RATED].sort((a,b)=>parseFloat(b.rating||0)-parseFloat(a.rating||0)).map(a=>{
-              if(a.bloodluxe){
-                return (
-                  <div key={a.num}>
-                    <AlbumCard num={a.num} title={a.title} artist={a.artist} rating={a.rating} date={a.date} coverKey={a.coverKey} top5={a.top5} top5Label={a.top5?.some(Boolean)?"Top Tracks":undefined}/>
-                    <div style={{marginLeft:18,marginBottom:5,borderLeft:"2px solid #1a3022",paddingLeft:10}}>
-                      <AlbumCard num="↳" title="Half Blood (BloodLuxe)" artist="Slayr" date={a.bloodluxe.date} songs={a.bloodluxe.songs} rating={a.bloodluxe.rating} coverKey={a.bloodluxe.coverKey}/>
-                    </div>
-                  </div>
-                );
-              }
-              return <AlbumCard key={a.num} num={a.num} title={a.title} artist={a.artist} rating={a.rating} notes={a.notes} coverKey={a.coverKey} top5={a.top5} top5Label="Top Tracks"/>;
-            })}
-            <SH>Unrated</SH>
-            {UG_UNRATED.map(a=><SR key={a.num} {...a}/>)}
-            <SH>Upcoming / Rumored</SH>
-            {UG_UPCOMING.map(a=><SR key={a.num} {...a}/>)}
-          </div>
-        )}
-
-        {/* ── DISCORD ── */}
-        {tab==="Discord" && (
-          <div>
-            <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
-              <SC label="Messages Sent" value="28,479" sub="2025 total"/>
-              <SC label="Voice Hours" value="847h" sub="in calls"/>
-              <SC label="Reactions Given" value="4,211" sub=""/>
-              <SC label="Commands Used" value="1,203" sub=""/>
-              <SC label="Longest Streak" value="312d" sub="" accent/>
-            </div>
-
-            <SH>2025 Activity Stats</SH>
-            {[
-              ["Messages Sent","28,479",28479],
-              ["Voice Hours","847h",847],
-              ["Reactions Given","4,211",4211],
-              ["Commands Used","1,203",1203],
-              ["Days Active Streak","312 days",312],
-            ].map(([label,val,n])=>(
-              <YBar key={label} label={label} val={val} max={28479} color="#7B68EE"/>
-            ))}
-
-            <SH>Highlights</SH>
-            {[
-              {label:"Most Active Month",value:"July 2025"},
-              {label:"Most Used Emoji",value:"💀"},
-              {label:"Top Channel",value:"#general"},
-              {label:"Longest Streak",value:"312 consecutive days"},
-            ].map(({label,value})=>(
-              <div key={label} style={{display:"flex",justifyContent:"space-between",padding:"8px 12px",borderRadius:6,background:"#0a0a0a",border:"1px solid #141414",marginBottom:4}}>
-                <span style={{color:"#aaa",fontSize:12}}>{label}</span>
-                <span style={{color:"#7B68EE",fontSize:12,fontWeight:700,fontFamily:"monospace"}}>{value}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── YOUTUBE ── */}
-        {tab==="YouTube" && (
-          <div>
-            <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
-              <SC label="YT Music 2025" value="1,476 min" sub="~24.6 hours"/>
-              <SC label="Top Artist" value="JID" sub="156 min"/>
-              <SC label="Top Genre" value="Hip Hop" sub="70% of listening"/>
-            </div>
-
-            <SH>YouTube Music 2025 Wrapped</SH>
-            {[
-              {label:"Total Minutes",value:"1,476"},
-              {label:"Top Artist",value:"JID (156 min)"},
-              {label:"Top Song",value:"Knife Talk — Drake ft. 21 Savage & Project Pat"},
-              {label:"Top Album",value:"The Forever Story — JID"},
-              {label:"Top Playlist",value:"Overryde113 ♫ (99 plays)"},
-              {label:"Peak Listening Hour",value:"8–9 PM"},
-            ].map(({label,value})=>(
-              <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",borderRadius:6,background:"#0a0a0a",border:"1px solid #141414",marginBottom:4}}>
-                <span style={{color:"#aaa",fontSize:12}}>{label}</span>
-                <span style={{color:"#FF4444",fontSize:12,fontWeight:700}}>{value}</span>
-              </div>
-            ))}
-
-            <SH>Genre Breakdown — YT Music 2025</SH>
-            {[["Hip Hop","70%",70],["R&B","8%",8],["Pop","3%",3],["Rock","3%",3],["Electronic","2%",2],["Other","14%",14]].map(([g,pct,n])=>(
-              <div key={g} style={{display:"flex",alignItems:"center",gap:10,marginBottom:7}}>
-                <span style={{color:"#aaa",fontSize:11,minWidth:80}}>{g}</span>
-                <div style={{flex:1,background:"#141414",borderRadius:3,height:5}}>
-                  <div style={{width:pct,height:"100%",background:"linear-gradient(90deg,#FF4444,#CC2222)",borderRadius:3}}/>
-                </div>
-                <span style={{color:"#FF4444",fontSize:11,fontFamily:"monospace",minWidth:32,textAlign:"right"}}>{pct}</span>
-              </div>
-            ))}
-
-            <SH>YouTube Music — 2023 Recap</SH>
-            {[
-              {label:"Total Minutes",value:"10,991"},
-              {label:"Top Artist",value:"Connor Price"},
-              {label:"Top Track",value:"Juice WRLD — Victorious Unreleased (15 plays)"},
-              {label:"Top Playlist",value:"Unreleased Juice WRLD (85 hours)"},
-              {label:"Primary Use",value:"Unreleased Juice WRLD content"},
-            ].map(({label,value})=>(
-              <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",borderRadius:6,background:"#0a0a0a",border:"1px solid #141414",marginBottom:4}}>
-                <span style={{color:"#aaa",fontSize:12}}>{label}</span>
-                <span style={{color:"#FF4444",fontSize:11,fontWeight:700,textAlign:"right",maxWidth:"55%"}}>{value}</span>
-              </div>
-            ))}
-
-            <div style={{marginTop:14,padding:"10px 13px",background:"#0a0a0a",border:"1px solid #161616",borderRadius:8,color:"#aaa",fontSize:11}}>
-              YouTube Music is mostly supplemental — Spotify is primary. YT Music usage dropped from 10,991 min in 2023 to 1,476 min in 2025 as Spotify took over fully.
-            </div>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
+  TOP120.forEach(s => {
+    const m = s.artist.split(",")[0].trim();
+    artistCounts[m] = (artistCounts[m] || 0) + 1;
+  });
+  const topPA = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#050505",
+      minHeight: "100vh",
+      color: "#e0e0e0",
+      fontFamily: "'DM Mono','Fira Code',monospace"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderBottom: "1px solid #0f0f0f",
+      padding: "28px 40px 22px",
+      background: "#070707"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "flex-end",
+      gap: 10,
+      flexWrap: "wrap",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 9,
+      letterSpacing: 4,
+      color: "#00e5a0",
+      textTransform: "uppercase",
+      marginBottom: 3
+    }
+  }, "Master Stats"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 30,
+      fontWeight: 800,
+      color: "#fff",
+      letterSpacing: -0.5
+    }
+  }, "Overryde113")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 3,
+      color: "#282828",
+      fontSize: 11
+    }
+  }, "Aug 2020 – May 2026")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      flexWrap: "wrap"
+    }
+  }, SECTIONS.map(s => /*#__PURE__*/React.createElement("button", {
+    key: s,
+    onClick: () => setTab(s),
+    style: {
+      background: tab === s ? "#00e5a0" : "transparent",
+      color: tab === s ? "#000" : "#aaa",
+      border: tab === s ? "none" : "1px solid #181818",
+      borderRadius: 7,
+      padding: "8px 18px",
+      fontSize: 13,
+      fontWeight: tab === s ? 800 : 400,
+      cursor: "pointer",
+      fontFamily: "inherit"
+    }
+  }, s)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "28px 40px",
+      maxWidth: 1400
+    }
+  }, tab === "Overview" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(SC, {
+    label: "Spotify Hours",
+    value: "2,537h",
+    sub: "Aug 2020 – Oct 2025"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Total Streams",
+    value: "87,619",
+    sub: "entries logged"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Skip Rate",
+    value: "35.4%",
+    sub: "30,979 skips"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Top Songs List",
+    value: "120",
+    sub: "Your All-Time Top Songs"
+  })), /*#__PURE__*/React.createElement(SH, null, "Year-Over-Year Spotify Listening"), yearData.map(d => /*#__PURE__*/React.createElement(YBar, {
+    key: d.year,
+    label: d.year,
+    val: d.mins,
+    max: maxMins,
+    partial: d.partial
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#282828",
+      fontSize: 10,
+      marginTop: 2
+    }
+  }, "* 2026 partial — streaming data ends Oct 2025"), /*#__PURE__*/React.createElement(SH, null, "All-Time Top 5 (Your Spotify Playlist)"), TOP120.slice(0, 5).map(s => /*#__PURE__*/React.createElement(Row, {
+    key: s.rank,
+    rank: s.rank,
+    left: s.title,
+    accent: s.artist,
+    gold: s.rank === 1
+  })), /*#__PURE__*/React.createElement(SH, null, "All-Time Top 5 Artists by Minutes"), artistsByMinutes.slice(0, 5).map(a => /*#__PURE__*/React.createElement(Row, {
+    key: a.rank,
+    rank: a.rank,
+    left: a.artist,
+    right: `${a.minutes.toLocaleString()} min`,
+    gold: a.rank === 1
+  })), /*#__PURE__*/React.createElement(SH, null, "AOTY 2026 — Current Standings"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5,
+      flexWrap: "wrap"
+    }
+  }, AOTY_RATED.map((x, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      background: "#0a0a0a",
+      border: `1px solid ${rc(x.rating)}1e`,
+      borderRadius: 7,
+      padding: "9px 12px",
+      flex: "1 1 105px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 5
+    }
+  }, /*#__PURE__*/React.createElement(RB, {
+    r: x.rating
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#ddd",
+      fontSize: 11,
+      fontWeight: 700,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
+  }, x.title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#333",
+      fontSize: 10,
+      marginTop: 1
+    }
+  }, x.artist))))), tab === "All-Time Top Songs" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#aaa",
+      fontSize: 11
+    }
+  }, "Your All-Time Top Songs playlist · 120 tracks"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSongPage(Math.max(0, songPage - 1)),
+    disabled: songPage === 0,
+    style: {
+      background: "none",
+      border: "1px solid #1e1e1e",
+      borderRadius: 4,
+      color: songPage === 0 ? "#222" : "#999",
+      cursor: songPage === 0 ? "default" : "pointer",
+      padding: "3px 9px",
+      fontSize: 11,
+      fontFamily: "inherit"
+    }
+  }, "←"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 11
+    }
+  }, songPage + 1, "/", totalPages), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSongPage(Math.min(totalPages - 1, songPage + 1)),
+    disabled: songPage === totalPages - 1,
+    style: {
+      background: "none",
+      border: "1px solid #1e1e1e",
+      borderRadius: 4,
+      color: songPage === totalPages - 1 ? "#222" : "#999",
+      cursor: songPage === totalPages - 1 ? "default" : "pointer",
+      padding: "3px 9px",
+      fontSize: 11,
+      fontFamily: "inherit"
+    }
+  }, "→"))), pageSongs.map(s => /*#__PURE__*/React.createElement("div", {
+    key: s.rank,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      padding: "7px 10px",
+      borderRadius: 6,
+      background: s.rank <= 3 ? "#0d1a12" : "transparent",
+      border: s.rank <= 3 ? "1px solid #1a3022" : "1px solid transparent",
+      marginBottom: 3
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: s.rank <= 10 ? "#00e5a0" : "#aaa",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 24,
+      textAlign: "right",
+      fontWeight: s.rank <= 10 ? 800 : 400
+    }
+  }, s.rank), /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 46,
+      height: 46,
+      borderRadius: 5,
+      background: "#141414",
+      flexShrink: 0,
+      overflow: "hidden"
+    }
+  }, s.cover && /*#__PURE__*/React.createElement("img", {
+    src: s.cover,
+    alt: "",
+    style: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      display: "block"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#e0e0e0",
+      fontSize: 13,
+      fontWeight: 600,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
+  }, s.title), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#aaa",
+      fontSize: 11,
+      marginTop: 1,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }
+  }, s.artist)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#222",
+      fontSize: 10,
+      whiteSpace: "nowrap",
+      maxWidth: 120,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textAlign: "right"
+    }
+  }, s.album))), /*#__PURE__*/React.createElement(SH, null, "Artist Breakdown — Top 120 Playlist"), topPA.map(([artist, count], i) => /*#__PURE__*/React.createElement("div", {
+    key: artist,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      marginBottom: 7
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 10,
+      fontFamily: "monospace",
+      minWidth: 20,
+      textAlign: "right"
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 3
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#ccc",
+      fontSize: 12
+    }
+  }, artist), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#00e5a0",
+      fontSize: 11,
+      fontFamily: "monospace"
+    }
+  }, count, " tracks")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "#141414",
+      borderRadius: 2,
+      height: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: `${count / topPA[0][1] * 100}%`,
+      height: "100%",
+      background: "linear-gradient(90deg,#00e5a0,#00b87a)",
+      borderRadius: 2
+    }
+  })))))), tab === "Spotify Stats" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SH, null, "Top 15 Artists — All Time \xA0", /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 400
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setArtistSort("minutes"),
+    style: {
+      background: "none",
+      border: "none",
+      color: artistSort === "minutes" ? "#00e5a0" : "#333",
+      cursor: "pointer",
+      fontSize: 9,
+      fontFamily: "inherit"
+    }
+  }, "minutes"), " / ", /*#__PURE__*/React.createElement("button", {
+    onClick: () => setArtistSort("plays"),
+    style: {
+      background: "none",
+      border: "none",
+      color: artistSort === "plays" ? "#00e5a0" : "#333",
+      cursor: "pointer",
+      fontSize: 9,
+      fontFamily: "inherit"
+    }
+  }, "plays"))), sorted.map(a => /*#__PURE__*/React.createElement(Row, {
+    key: a.rank,
+    rank: a.rank,
+    left: a.artist,
+    right: artistSort === "minutes" ? `${a.minutes.toLocaleString()} min` : a.plays ? `${a.plays.toLocaleString()} plays` : "—",
+    gold: a.rank === 1
+  })), /*#__PURE__*/React.createElement(SH, null, "Top 15 Albums — Long Term"), [{
+    rank: 1,
+    album: "MUSIC",
+    cover: COVERS.c036,
+    artist: "Playboi Carti"
+  }, {
+    rank: 2,
+    album: "WHAM (Extended Version)",
+    cover: COVERS.c055,
+    artist: "Lil Baby"
+  }, {
+    rank: 3,
+    album: "HARDSTONE PSYCHO",
+    artist: "Don Toliver"
+  }, {
+    rank: 4,
+    album: "Eternal Atake (Deluxe)",
+    artist: "Lil Uzi Vert"
+  }, {
+    rank: 5,
+    album: "Blonde",
+    cover: COVERS.c010,
+    artist: "Frank Ocean"
+  }, {
+    rank: 6,
+    album: "The Party Never Ends 2.0",
+    cover: COVERS.c050,
+    artist: "Juice WRLD"
+  }, {
+    rank: 7,
+    album: "Heaven Or Hell",
+    cover: COVERS.c028,
+    artist: "Don Toliver"
+  }, {
+    rank: 8,
+    album: "MUSIC - SORRY 4 DA WAIT",
+    artist: "Playboi Carti"
+  }, {
+    rank: 9,
+    album: "Utopia",
+    cover: COVERS.c054,
+    artist: "Travis Scott"
+  }, {
+    rank: 10,
+    album: "The Pre-Party",
+    cover: COVERS.c052,
+    artist: "Juice WRLD"
+  }, {
+    rank: 11,
+    album: "King Tonka",
+    artist: "Yeat"
+  }, {
+    rank: 12,
+    album: "Love Sick (Deluxe)",
+    artist: "Don Toliver"
+  }, {
+    rank: 13,
+    album: "Flower Boy",
+    cover: COVERS.c023,
+    artist: "Tyler, The Creator"
+  }, {
+    rank: 14,
+    album: "ALL RED",
+    cover: COVERS.c002,
+    artist: "Playboi Carti"
+  }, {
+    rank: 15,
+    album: "The Forever Story (Extended)",
+    cover: COVERS.c049,
+    artist: "JID"
+  }].map(a => /*#__PURE__*/React.createElement(Row, {
+    key: a.rank,
+    rank: a.rank,
+    left: a.album,
+    accent: a.artist,
+    gold: a.rank === 1
+  })), /*#__PURE__*/React.createElement(SH, null, "Top 10 Songs — 2026 So Far ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontWeight: 400,
+      fontSize: 9,
+      textTransform: "none",
+      letterSpacing: 0
+    }
+  }, "from streaming history data (ends Oct 2025)")), [{
+    rank: 1,
+    title: "Body",
+    artist: "Don Toliver",
+    plays: 14
+  }, {
+    rank: 2,
+    title: "Tiramisu",
+    artist: "Don Toliver",
+    plays: 13
+  }, {
+    rank: 3,
+    title: "E85",
+    artist: "Don Toliver",
+    plays: 13
+  }, {
+    rank: 4,
+    title: "ORDER OF PROTECTION",
+    artist: "A$AP Rocky",
+    plays: 11
+  }, {
+    rank: 5,
+    title: "Call Back",
+    artist: "Don Toliver",
+    plays: 11
+  }, {
+    rank: 6,
+    title: "HELICOPTER",
+    artist: "A$AP Rocky",
+    plays: 10
+  }, {
+    rank: 7,
+    title: "PUNK ROCKY",
+    artist: "A$AP Rocky",
+    plays: 10
+  }, {
+    rank: 8,
+    title: "Excavator",
+    artist: "Don Toliver",
+    plays: 10
+  }, {
+    rank: 9,
+    title: "STOLE YA FLOW",
+    artist: "A$AP Rocky",
+    plays: 9
+  }, {
+    rank: 10,
+    title: "Long Way To Calabasas",
+    artist: "Don Toliver",
+    plays: 9
+  }].map(s => /*#__PURE__*/React.createElement(Row, {
+    key: s.rank,
+    rank: s.rank,
+    left: s.title,
+    accent: s.artist,
+    right: `${s.plays}×`
+  })), /*#__PURE__*/React.createElement(SH, null, "Most Skipped Songs (All Time)"), [{
+    skips: 68,
+    title: "Costa Rica",
+    artist: "RONNY J ft. Ski Mask"
+  }, {
+    skips: 56,
+    title: "On tha linë",
+    artist: "Yeat"
+  }, {
+    skips: 47,
+    title: "Empty",
+    artist: "Juice WRLD"
+  }, {
+    skips: 47,
+    title: "Lucid Dreams",
+    artist: "Juice WRLD"
+  }, {
+    skips: 37,
+    title: "Righteous",
+    artist: "Juice WRLD"
+  }, {
+    skips: 37,
+    title: "Bad Energy",
+    artist: "Juice WRLD"
+  }, {
+    skips: 37,
+    title: "2 Up",
+    artist: "Yeat"
+  }, {
+    skips: 35,
+    title: "Ok Kool",
+    artist: "Yeat"
+  }, {
+    skips: 33,
+    title: "All Girls Are The Same",
+    artist: "Juice WRLD"
+  }, {
+    skips: 33,
+    title: "Tëslas & Rovers",
+    artist: "Yeat"
+  }].map((s, i) => /*#__PURE__*/React.createElement(Row, {
+    key: i,
+    rank: i + 1,
+    left: s.title,
+    accent: s.artist,
+    right: `${s.skips}× skipped`
+  })), /*#__PURE__*/React.createElement(SH, null, "Top Genres — Long Term"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 5,
+      flexWrap: "wrap"
+    }
+  }, ["Rap", "Rage Rap", "Melodic Rap", "Emo Rap", "Trap", "Hip Hop", "West Coast Hip Hop", "Sexy Drill", "Soundtrack", "Score", "Christian Hip Hop", "Drill", "Underground Hip Hop", "Southern Hip Hop", "New York Drill", "Chicago Drill", "UK Drill", "Cloud Rap", "Trap Metal"].map((g, i) => /*#__PURE__*/React.createElement("span", {
+    key: i,
+    style: {
+      background: i < 6 ? "#0d1a12" : "#0a0a0a",
+      border: `1px solid ${i < 6 ? "#1a3022" : "#181818"}`,
+      borderRadius: 4,
+      padding: "3px 8px",
+      fontSize: 10,
+      color: i < 6 ? "#00e5a0" : "#aaa"
+    }
+  }, "#", i + 1, " ", g)))), tab === "Wrapped History" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SH, null, "Spotify Wrapped — Year Over Year"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      width: "100%",
+      borderCollapse: "collapse",
+      fontSize: 12
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, ["Stat", "2022", "2023", "2024", "2025"].map(h => /*#__PURE__*/React.createElement("th", {
+    key: h,
+    style: {
+      textAlign: "left",
+      padding: "7px 10px",
+      color: "#00e5a0",
+      fontSize: 9,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+      borderBottom: "1px solid #141414"
+    }
+  }, h)))), /*#__PURE__*/React.createElement("tbody", null, [["Spotify Minutes", "27,560", "23,093", "28,327", "34,845"], ["Total Artists", "—", "687", "—", "822"], ["Total Albums", "—", "—", "—", "91"], ["Top Artist", "Juice WRLD", "Juice WRLD", "Yeat", "Playboi Carti"], ["Top Artist Min", "5,180", "5,724", "9,677", "4,487"], ["Top Artist Fan%", "Top 0.5%", "Top 0.5%", "—", "Top 0.2%"], ["Top Song", "Righteous", "SAME ENERGY", "ALL RED", "Raydar"], ["Top Song Plays", "—", "—", "100", "100"], ["Top Genre", "Rap", "Rap", "—", "Trap"], ["Top Albums", "G&GR · DRFL · LND · Pre-Party · F&JW", "—", "—", "MUSIC — Carti"], ["Podcast Episodes", "55", "—", "—", "—"], ["Spotify Club", "—", "—", "—", "Grit Collective"]].map((row, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    style: {
+      background: i % 2 === 0 ? "#080808" : "transparent"
+    }
+  }, row.map((cell, j) => /*#__PURE__*/React.createElement("td", {
+    key: j,
+    style: {
+      padding: "7px 10px",
+      color: j === 0 ? "#aaa" : "#bbb",
+      borderBottom: "1px solid #0f0f0f",
+      fontSize: j === 0 ? 11 : 12
+    }
+  }, cell))))))), /*#__PURE__*/React.createElement(SH, null, "2024 Wrapped — Monthly Timeline"), [{
+    month: "April",
+    desc: "Future, 21 Savage, Juice WRLD. ALL RED on heavy rotation. World Tour (Aquafina), Lightyears."
+  }, {
+    month: "June",
+    desc: "Ski Mask The Slump God — 11th Dimension. Wake Up was the move. Left turn from usual lane."
+  }, {
+    month: "September",
+    desc: "Back to Yeat — Heavy Stunts (King Tonka). Juice WRLD's The Pre-Party also in rotation."
+  }, {
+    month: "November",
+    desc: "Lil Uzi Vert takeover — 727 plays in one month. Homecoming, Low Men, Silly Watch, You Better Move."
+  }].map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      marginBottom: 6,
+      padding: "9px 13px",
+      background: "#0a0a0a",
+      border: "1px solid #161616",
+      borderRadius: 8,
+      display: "flex",
+      gap: 12,
+      alignItems: "flex-start"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#00e5a0",
+      fontSize: 10,
+      fontWeight: 700,
+      minWidth: 62,
+      paddingTop: 1
+    }
+  }, m.month), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#bbb",
+      fontSize: 12
+    }
+  }, m.desc))), /*#__PURE__*/React.createElement(SH, null, "2025 Wrapped — Monthly Peaks"), [{
+    month: "April",
+    desc: "MUSIC (Playboi Carti) — 467 streams"
+  }, {
+    month: "May",
+    desc: "MUSIC (Playboi Carti) — 112 streams"
+  }, {
+    month: "September",
+    desc: "Playboi Carti — 80 streams"
+  }].map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      marginBottom: 5,
+      padding: "8px 13px",
+      background: "#0a0a0a",
+      border: "1px solid #161616",
+      borderRadius: 8,
+      display: "flex",
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#00e5a0",
+      fontSize: 10,
+      fontWeight: 700,
+      minWidth: 62
+    }
+  }, m.month), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#bbb",
+      fontSize: 12
+    }
+  }, m.desc)))), tab === "AOTY 2026" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 12,
+      padding: "8px 12px",
+      background: "#0a1a12",
+      border: "1px solid #162a1e",
+      borderRadius: 7,
+      fontSize: 10,
+      color: "#aaa"
+    }
+  }, "Tap any rated album to expand top tracks · Rated list sorted by score"), /*#__PURE__*/React.createElement(SH, null, "Rated"), [...AOTY_RATED].sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0)).map((a, idx) => {
+    if (a.disc1) {
+      return /*#__PURE__*/React.createElement(AlbumCard, {
+        key: a.num,
+        num: a.num,
+        title: a.title,
+        artist: a.artist,
+        rating: a.rating,
+        date: a.date,
+        songs: a.songs,
+        coverKey: a.coverKey,
+        top5: a.disc1,
+        top5Label: "Disc 1",
+        top5b: a.disc2,
+        top5bLabel: "Disc 2"
+      });
+    }
+    if (a.deluxe) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: a.num
+      }, /*#__PURE__*/React.createElement(AlbumCard, {
+        num: a.num,
+        title: a.title,
+        artist: a.artist,
+        rating: a.rating,
+        date: a.date,
+        songs: a.songs,
+        notes: a.notes,
+        coverKey: a.coverKey,
+        top5: a.top5,
+        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+      }), /*#__PURE__*/React.createElement("div", {
+        style: {
+          marginLeft: 18,
+          marginBottom: 5,
+          borderLeft: "2px solid #1a3022",
+          paddingLeft: 10
+        }
+      }, /*#__PURE__*/React.createElement(AlbumCard, {
+        num: "↳",
+        title: "Deluxe",
+        artist: `${a.deluxe.songs} songs · ${a.deluxe.date} · ${a.deluxe.notes}`,
+        rating: a.deluxe.rating,
+        coverKey: a.coverKey,
+        top5: a.deluxe.top5,
+        top5Label: "Top Tracks"
+      })));
+    }
+    return /*#__PURE__*/React.createElement(AlbumCard, {
+      key: a.num,
+      num: a.num,
+      title: a.title,
+      artist: a.artist,
+      rating: a.rating,
+      coverKey: a.coverKey,
+      date: a.date,
+      songs: a.songs,
+      notes: a.notes,
+      top5: a.top5,
+      top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+    });
+  }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), AOTY_UNRATED.map(a => /*#__PURE__*/React.createElement(SR, {
+    key: a.num,
+    ...a
+  })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), AOTY_UPCOMING.map(a => /*#__PURE__*/React.createElement(SR, {
+    key: a.num,
+    ...a
+  }))), tab === "Underground" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SH, null, "Rated"), [...UG_RATED].sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0)).map(a => {
+    if (a.bloodluxe) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: a.num
+      }, /*#__PURE__*/React.createElement(AlbumCard, {
+        num: a.num,
+        title: a.title,
+        artist: a.artist,
+        rating: a.rating,
+        date: a.date,
+        coverKey: a.coverKey,
+        top5: a.top5,
+        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+      }), /*#__PURE__*/React.createElement("div", {
+        style: {
+          marginLeft: 18,
+          marginBottom: 5,
+          borderLeft: "2px solid #1a3022",
+          paddingLeft: 10
+        }
+      }, /*#__PURE__*/React.createElement(AlbumCard, {
+        num: "↳",
+        title: "Half Blood (BloodLuxe)",
+        artist: "Slayr",
+        date: a.bloodluxe.date,
+        songs: a.bloodluxe.songs,
+        rating: a.bloodluxe.rating,
+        coverKey: a.bloodluxe.coverKey
+      })));
+    }
+    return /*#__PURE__*/React.createElement(AlbumCard, {
+      key: a.num,
+      num: a.num,
+      title: a.title,
+      artist: a.artist,
+      rating: a.rating,
+      notes: a.notes,
+      coverKey: a.coverKey,
+      top5: a.top5,
+      top5Label: "Top Tracks"
+    });
+  }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), UG_UNRATED.map(a => /*#__PURE__*/React.createElement(SR, {
+    key: a.num,
+    ...a
+  })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), UG_UPCOMING.map(a => /*#__PURE__*/React.createElement(SR, {
+    key: a.num,
+    ...a
+  }))), tab === "Discord" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(SC, {
+    label: "Messages Sent",
+    value: "28,479",
+    sub: "2025 total"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Voice Hours",
+    value: "847h",
+    sub: "in calls"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Reactions Given",
+    value: "4,211",
+    sub: ""
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Commands Used",
+    value: "1,203",
+    sub: ""
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Longest Streak",
+    value: "312d",
+    sub: "",
+    accent: true
+  })), /*#__PURE__*/React.createElement(SH, null, "2025 Activity Stats"), [["Messages Sent", "28,479", 28479], ["Voice Hours", "847h", 847], ["Reactions Given", "4,211", 4211], ["Commands Used", "1,203", 1203], ["Days Active Streak", "312 days", 312]].map(([label, val, n]) => /*#__PURE__*/React.createElement(YBar, {
+    key: label,
+    label: label,
+    val: val,
+    max: 28479,
+    color: "#7B68EE"
+  })), /*#__PURE__*/React.createElement(SH, null, "Highlights"), [{
+    label: "Most Active Month",
+    value: "July 2025"
+  }, {
+    label: "Most Used Emoji",
+    value: "💀"
+  }, {
+    label: "Top Channel",
+    value: "#general"
+  }, {
+    label: "Longest Streak",
+    value: "312 consecutive days"
+  }].map(({
+    label,
+    value
+  }) => /*#__PURE__*/React.createElement("div", {
+    key: label,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      padding: "8px 12px",
+      borderRadius: 6,
+      background: "#0a0a0a",
+      border: "1px solid #141414",
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 12
+    }
+  }, label), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#7B68EE",
+      fontSize: 12,
+      fontWeight: 700,
+      fontFamily: "monospace"
+    }
+  }, value)))), tab === "YouTube" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(SC, {
+    label: "YT Music 2025",
+    value: "1,476 min",
+    sub: "~24.6 hours"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Top Artist",
+    value: "JID",
+    sub: "156 min"
+  }), /*#__PURE__*/React.createElement(SC, {
+    label: "Top Genre",
+    value: "Hip Hop",
+    sub: "70% of listening"
+  })), /*#__PURE__*/React.createElement(SH, null, "YouTube Music 2025 Wrapped"), [{
+    label: "Total Minutes",
+    value: "1,476"
+  }, {
+    label: "Top Artist",
+    value: "JID (156 min)"
+  }, {
+    label: "Top Song",
+    value: "Knife Talk — Drake ft. 21 Savage & Project Pat"
+  }, {
+    label: "Top Album",
+    value: "The Forever Story — JID"
+  }, {
+    label: "Top Playlist",
+    value: "Overryde113 ♫ (99 plays)"
+  }, {
+    label: "Peak Listening Hour",
+    value: "8–9 PM"
+  }].map(({
+    label,
+    value
+  }) => /*#__PURE__*/React.createElement("div", {
+    key: label,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "8px 12px",
+      borderRadius: 6,
+      background: "#0a0a0a",
+      border: "1px solid #141414",
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 12
+    }
+  }, label), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#FF4444",
+      fontSize: 12,
+      fontWeight: 700
+    }
+  }, value))), /*#__PURE__*/React.createElement(SH, null, "Genre Breakdown — YT Music 2025"), [["Hip Hop", "70%", 70], ["R&B", "8%", 8], ["Pop", "3%", 3], ["Rock", "3%", 3], ["Electronic", "2%", 2], ["Other", "14%", 14]].map(([g, pct, n]) => /*#__PURE__*/React.createElement("div", {
+    key: g,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      marginBottom: 7
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 11,
+      minWidth: 80
+    }
+  }, g), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      background: "#141414",
+      borderRadius: 3,
+      height: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: pct,
+      height: "100%",
+      background: "linear-gradient(90deg,#FF4444,#CC2222)",
+      borderRadius: 3
+    }
+  })), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#FF4444",
+      fontSize: 11,
+      fontFamily: "monospace",
+      minWidth: 32,
+      textAlign: "right"
+    }
+  }, pct))), /*#__PURE__*/React.createElement(SH, null, "YouTube Music — 2023 Recap"), [{
+    label: "Total Minutes",
+    value: "10,991"
+  }, {
+    label: "Top Artist",
+    value: "Connor Price"
+  }, {
+    label: "Top Track",
+    value: "Juice WRLD — Victorious Unreleased (15 plays)"
+  }, {
+    label: "Top Playlist",
+    value: "Unreleased Juice WRLD (85 hours)"
+  }, {
+    label: "Primary Use",
+    value: "Unreleased Juice WRLD content"
+  }].map(({
+    label,
+    value
+  }) => /*#__PURE__*/React.createElement("div", {
+    key: label,
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "8px 12px",
+      borderRadius: 6,
+      background: "#0a0a0a",
+      border: "1px solid #141414",
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#aaa",
+      fontSize: 12
+    }
+  }, label), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "#FF4444",
+      fontSize: 11,
+      fontWeight: 700,
+      textAlign: "right",
+      maxWidth: "55%"
+    }
+  }, value))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      padding: "10px 13px",
+      background: "#0a0a0a",
+      border: "1px solid #161616",
+      borderRadius: 8,
+      color: "#aaa",
+      fontSize: 11
+    }
+  }, "YouTube Music is mostly supplemental — Spotify is primary. YT Music usage dropped from 10,991 min in 2023 to 1,476 min in 2025 as Spotify took over fully."))));
 }
-
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(React.createElement(App));
 </script>
 </body>
 </html>
