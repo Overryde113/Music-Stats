@@ -1305,7 +1305,7 @@ const AOTY_UPCOMING = [{
   num: 25,
   title: "The Real Me",
   artist: "Future",
-  date: "TBA"
+  date: "Jul 10"
 }, {
   num: 26,
   title: "God Doesn't Like Ugly",
@@ -1540,108 +1540,129 @@ const UG_UNRATED = [{
   artist: "Dro Kenji",
   date: "Jun 12",
   songs: 15
+}, {
+  num: 29,
+  title: "Project X",
+  artist: "Key Glock",
+  date: "Jun 19"
+}, {
+  num: 30,
+  title: "Trench Town",
+  artist: "Cochise",
+  date: "Jun 19"
+}, {
+  num: 31,
+  title: "The Rule Of Success",
+  artist: "LAZER DIM 700",
+  date: "Jun 24"
 }];
 const UG_UPCOMING = [{
-  num: 28,
+  num: 32,
+  title: "Cartunez",
+  artist: "Ken Carson",
+  date: "Jul 10"
+}, {
+  num: 33,
   title: "Color Me Green",
   artist: "Rich Amiri",
   date: "Jun 2026"
 }, {
-  num: 29,
+  num: 34,
   title: "Fabula Nova",
   artist: "Slayr",
   date: "Jun 2026"
 }, {
-  num: 30,
-  title: "The Xpreiment",
+  num: 35,
+  title: "Xperiment",
   artist: "Ken Carson",
-  date: "Jul 23"
+  date: "Jul 3"
 }, {
-  num: 31,
+  num: 36,
   title: "Drop Dead Gorgeous (DDG)",
   artist: "Destroy Lonely",
   date: "Nov 2026"
 }, {
-  num: 32,
+  num: 37,
   title: "BADMAN",
   artist: "Summrs",
   date: "TBA"
 }, {
-  num: 33,
+  num: 38,
   title: "Nocturnal",
   artist: "OsamaSon",
   date: "TBA"
 }, {
-  num: 34,
+  num: 39,
   title: "Psykotic (Deluxe)",
   artist: "OsamaSon",
   date: "TBA"
 }, {
-  num: 36,
+  num: 40,
   title: "Untitled Collab Mixtape",
   artist: "Ken Carson x Destroy Lonely",
   date: "TBA"
 }, {
-  num: 37,
+  num: 41,
   title: "Heaven Offline",
   artist: "DC THE DON",
   date: "TBA"
 }, {
-  num: 38,
+  num: 42,
   title: "Valedictorian 3",
   artist: "Ian",
   date: "TBA"
 }, {
-  num: 39,
+  num: 43,
   title: "Seventh Heaven",
   artist: "Slayr",
   date: "TBA"
 }, {
-  num: 40,
+  num: 44,
   title: "Sex Money Power",
   artist: "9V (Nine Vicious)",
   date: "TBA"
 }, {
-  num: 41,
+  num: 45,
   title: "Spaz&B 2",
   artist: "Glokk40Spaz",
   date: "TBA"
 }, {
-  num: 42,
+  num: 46,
   title: "NEON",
   artist: "Bktherula",
   date: "TBA"
 }, {
-  num: 43,
+  num: 47,
   title: "Solitude In Silence",
   artist: "midwxst",
   date: "TBA"
 }, {
-  num: 44,
+  num: 48,
   title: "CANINE",
   artist: "EsDeeKid",
   date: "TBA"
 }, {
-  num: 45,
+  num: 49,
   title: "KILL YOUR IDOLS",
   artist: "bleood",
   date: "TBA"
 }, {
-  num: 46,
+  num: 50,
   title: "Mad Dogg",
   artist: "Wallie the Sensei",
   date: "TBA"
 }, {
-  num: 47,
+  num: 51,
   title: "TBA Collab",
   artist: "St. Lunatics & Metro Boomin",
   date: "TBA"
 }, {
-  num: 48,
+  num: 52,
   title: "Lost Files 5",
   artist: "Ken Carson",
   date: "TBA"
 }];
+const APP_VERSION = "1.1.0";
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
@@ -1761,6 +1782,18 @@ function App() {
     artistCounts[m] = (artistCounts[m] || 0) + 1;
   });
   const topPA = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const [today, setToday] = useState(() => new Date());
+  React.useEffect(() => {
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+    const timer = setTimeout(() => setToday(new Date()), msUntilMidnight + 500);
+    return () => clearTimeout(timer);
+  }, [today]);
+  const todayStr = today.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
   return /*#__PURE__*/React.createElement("div", {
     style: {
       background: "#050505",
@@ -1803,7 +1836,14 @@ function App() {
       color: "#282828",
       fontSize: 11
     }
-  }, "Aug 2020 – May 2026")), /*#__PURE__*/React.createElement("div", {
+  }, "Aug 2020 – May 2026"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 3,
+      color: "#282828",
+      fontSize: 11,
+      marginLeft: "auto"
+    }
+  }, "v", APP_VERSION, " · ", todayStr)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 4,
