@@ -4,10 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Wrapped Stats</title>
-<style>
-  html, body { margin: 0; padding: 0; background: #050505; }
-  #root { min-height: 100vh; }
-</style>
+<style>html,body{margin:0;padding:0;background:#050505;}#root{min-height:100vh;}</style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 </head>
@@ -97,7 +94,7 @@ const RB = ({
 }) => {
   if (r === null || r === undefined || r === "_") return /*#__PURE__*/React.createElement("span", {
     style: {
-      color: "#333",
+      color: "#aaa",
       fontSize: 11
     }
   }, "—");
@@ -354,7 +351,7 @@ const AlbumCard = ({
     r: rating
   }), has && /*#__PURE__*/React.createElement("span", {
     style: {
-      color: "#222",
+      color: "#aaa",
       fontSize: 9
     }
   }, open ? "▲" : "▼"))), open && /*#__PURE__*/React.createElement("div", {
@@ -1555,6 +1552,11 @@ const UG_UNRATED = [{
   title: "The Rule Of Success",
   artist: "LAZER DIM 700",
   date: "Jun 24"
+}, {
+  num: 32,
+  title: "Xperiment",
+  artist: "Ken Carson",
+  date: "Jul 3"
 }];
 const UG_UPCOMING = [{
   num: 32,
@@ -1571,11 +1573,6 @@ const UG_UPCOMING = [{
   title: "Fabula Nova",
   artist: "Slayr",
   date: "Jun 2026"
-}, {
-  num: 35,
-  title: "Xperiment",
-  artist: "Ken Carson",
-  date: "Jul 3"
 }, {
   num: 36,
   title: "Drop Dead Gorgeous (DDG)",
@@ -1833,13 +1830,13 @@ function App() {
   }, "Overryde113")), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 3,
-      color: "#555",
+      color: "#aaa",
       fontSize: 11
     }
   }, "Aug 2020 – May 2026"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 3,
-      color: "#555",
+      color: "#aaa",
       fontSize: 11,
       marginLeft: "auto"
     }
@@ -1899,7 +1896,7 @@ function App() {
     partial: d.partial
   })), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#555",
+      color: "#aaa",
       fontSize: 10,
       marginTop: 2
     }
@@ -1947,7 +1944,7 @@ function App() {
     }
   }, x.title), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#333",
+      color: "#aaa",
       fontSize: 10,
       marginTop: 1
     }
@@ -2064,7 +2061,7 @@ function App() {
     }
   }, s.artist)), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#222",
+      color: "#aaa",
       fontSize: 10,
       whiteSpace: "nowrap",
       maxWidth: 120,
