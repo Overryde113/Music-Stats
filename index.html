@@ -259,7 +259,83 @@ const YBar = ({
   }
 })));
 
-// ── ALBUM CARD ───────────────────────────────────────
+// ── COVER ART (auto-fetch from iTunes, fallback MusicBrainz) ──────────────
+const coverCache = {};
+const CoverImg = ({
+  coverKey,
+  title,
+  artist,
+  size = 52,
+  radius = 6
+}) => {
+  const [src, setSrc] = useState(() => coverKey ? COVERS[coverKey] : null);
+  React.useEffect(() => {
+    if (src || !title || !artist) return;
+    const cacheKey = title + artist;
+    if (coverCache[cacheKey]) {
+      setSrc(coverCache[cacheKey]);
+      return;
+    }
+    // Try iTunes Search API first (no auth, great rap coverage)
+    const q = encodeURIComponent(`${title} ${artist}`);
+    fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=5`).then(r => r.json()).then(data => {
+      const results = data?.results || [];
+      // Find best match
+      const match = results.find(r => r.collectionName?.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(r.collectionName?.toLowerCase())) || results[0];
+      if (match?.artworkUrl100) {
+        // Upgrade to 600px
+        return match.artworkUrl100.replace("100x100bb", "600x600bb");
+      }
+      return null;
+    }).then(url => {
+      if (url) {
+        coverCache[cacheKey] = url;
+        setSrc(url);
+        return;
+      }
+      // Fallback: MusicBrainz / Cover Art Archive
+      const mbq = encodeURIComponent(`"${title}" AND artist:"${artist}"`);
+      return fetch(`https://musicbrainz.org/ws/2/release/?query=${mbq}&fmt=json&limit=1`, {
+        headers: {
+          "User-Agent": "MusicStats/1.0 (personal)"
+        }
+      }).then(r => r.json()).then(data => {
+        const id = data?.releases?.[0]?.id;
+        if (!id) return;
+        return fetch(`https://coverartarchive.org/release/${id}/front-250`);
+      }).then(r => {
+        if (r?.ok) return r.blob();
+      }).then(blob => {
+        if (!blob) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+          coverCache[cacheKey] = e.target.result;
+          setSrc(e.target.result);
+        };
+        reader.readAsDataURL(blob);
+      });
+    }).catch(() => {});
+  }, [title, artist]);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: size,
+      height: size,
+      borderRadius: radius,
+      background: "#161616",
+      flexShrink: 0,
+      overflow: "hidden"
+    }
+  }, src && /*#__PURE__*/React.createElement("img", {
+    src: src,
+    alt: "",
+    style: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      display: "block"
+    }
+  }));
+};
 const AlbumCard = ({
   num,
   title,
@@ -276,7 +352,6 @@ const AlbumCard = ({
 }) => {
   const [open, setOpen] = useState(false);
   const has = top5?.some(Boolean) || top5b?.some(Boolean);
-  const art = coverKey ? COVERS[coverKey] : null;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       background: "#0a0a0a",
@@ -302,25 +377,13 @@ const AlbumCard = ({
       minWidth: 20,
       flexShrink: 0
     }
-  }, num), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 52,
-      height: 52,
-      borderRadius: 6,
-      background: "#161616",
-      flexShrink: 0,
-      overflow: "hidden"
-    }
-  }, art && /*#__PURE__*/React.createElement("img", {
-    src: art,
-    alt: "",
-    style: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      display: "block"
-    }
-  })), /*#__PURE__*/React.createElement("div", {
+  }, num), /*#__PURE__*/React.createElement(CoverImg, {
+    coverKey: coverKey,
+    title: title,
+    artist: artist,
+    size: 52,
+    radius: 6
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       minWidth: 0
@@ -431,7 +494,6 @@ const SR = ({
   notes,
   coverKey
 }) => {
-  const art = coverKey ? COVERS[coverKey] : null;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -452,25 +514,13 @@ const SR = ({
       textAlign: "right",
       flexShrink: 0
     }
-  }, num), /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 46,
-      height: 46,
-      borderRadius: 5,
-      background: "#141414",
-      flexShrink: 0,
-      overflow: "hidden"
-    }
-  }, art && /*#__PURE__*/React.createElement("img", {
-    src: art,
-    alt: "",
-    style: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      display: "block"
-    }
-  })), /*#__PURE__*/React.createElement("div", {
+  }, num), /*#__PURE__*/React.createElement(CoverImg, {
+    coverKey: coverKey,
+    title: title,
+    artist: artist,
+    size: 46,
+    radius: 5
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       minWidth: 0
@@ -1601,7 +1651,7 @@ const UG_UPCOMING = [{
   artist: "Ken Carson",
   date: "TBA"
 }];
-const APP_VERSION = "1.14.0";
+const APP_VERSION = "1.16.0";
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
