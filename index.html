@@ -87,6 +87,21 @@ const SECTIONS = ["Overview", "All-Time Top Songs", "Spotify Stats", "Wrapped Hi
 const ALBUMS_KEY = "musicstats_albums_v1";
 const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const artUrl = r => r?.artworkUrl100 ? r.artworkUrl100.replace("100x100bb", "600x600bb") : null;
+
+// The iTunes Search API does not reliably send CORS headers to every origin
+// (it can work from localhost during dev and then silently fail once deployed
+// to a real domain like GitHub Pages). JSONP sidesteps that entirely since
+// it loads via a <script> tag instead of fetch/XHR.
+let _jsonpN = 0;
+const itunesJsonp = (url) => new Promise((resolve, reject) => {
+  const cb = `_itunesCb${Date.now()}_${_jsonpN++}`;
+  const script = document.createElement("script");
+  const cleanup = () => { try { delete window[cb]; } catch(e) {} script.remove(); };
+  window[cb] = (data) => { cleanup(); resolve(data); };
+  script.onerror = () => { cleanup(); reject(new Error("iTunes JSONP request failed")); };
+  script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${cb}`;
+  document.body.appendChild(script);
+});
 const SECTION_OPTIONS = [{
   value: "aotyRated",
   label: "AOTY 2026 — Rated"
@@ -319,7 +334,7 @@ const CoverImg = ({
         setSrc(coverCache[cacheKey]);
         return;
       }
-      fetch(`https://itunes.apple.com/lookup?id=${itunesId}`).then(r => r.json()).then(data => {
+      itunesJsonp(`https://itunes.apple.com/lookup?id=${itunesId}`).then(data => {
         const url = data?.results?.[0]?.artworkUrl100?.replace("100x100bb", "600x600bb");
         if (url) {
           coverCache[cacheKey] = url;
@@ -336,7 +351,7 @@ const CoverImg = ({
     }
     // Try iTunes Search API first (no auth, great rap coverage)
     const q = encodeURIComponent(`${title} ${artist}`);
-    fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=5`).then(r => r.json()).then(data => {
+    itunesJsonp(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=5`).then(data => {
       const results = data?.results || [];
       // Find best match
       const match = results.find(r => r.collectionName?.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(r.collectionName?.toLowerCase())) || results[0];
@@ -544,13 +559,17 @@ const SearchLibraryTool = ({
       overflow: "hidden",
       textOverflow: "ellipsis"
     }
-  }, a.title), /*#__PURE__*/React.createElement("div", {
+  }, getArtistEmoji(a.artist), " ", a.title), /*#__PURE__*/React.createElement("div", {
     style: {
-      color: "#aaa",
-      fontSize: 10,
-      marginTop: 1
+      display: "flex",
+      alignItems: "center",
+      gap: 5,
+      marginTop: 3,
+      flexWrap: "wrap"
     }
-  }, a.artist, " · ", (SECTION_OPTIONS.find(o => o.value === a.section) || {}).label || a.section, a.date ? ` · ${a.date}` : "")), a.rating && /*#__PURE__*/React.createElement(StarRating, {
+  }, /*#__PURE__*/React.createElement("span", {
+    style: { color: "#aaa", fontSize: 10 }
+  }, a.artist, " · ", (SECTION_OPTIONS.find(o => o.value === a.section) || {}).label || a.section, a.date ? ` · ${a.date}` : ""), (() => { const era = getEraTag(a); return era ? /*#__PURE__*/React.createElement(TagPill, { key: "era" }, era.emoji, " ", era.label) : null; })())), a.rating && /*#__PURE__*/React.createElement(StarRating, {
     rating: a.rating,
     size: 11
   }))));
@@ -956,7 +975,7 @@ const AddAlbumTool = ({
     setLoading(true);
     const t = setTimeout(() => {
       const q = encodeURIComponent(query.trim());
-      fetch(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=10`).then(r => r.json()).then(data => setResults(data?.results || [])).catch(() => setResults([])).finally(() => setLoading(false));
+      itunesJsonp(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=15`).then(data => setResults(data?.results || [])).catch(() => setResults([])).finally(() => setLoading(false));
     }, 350);
     return () => clearTimeout(t);
   }, [query]);
@@ -2655,7 +2674,7 @@ const findDuplicate = (albums, {
   title,
   artist
 }) => albums.find(a => itunesId && a.itunesId === itunesId || norm(a.title) === norm(title) && norm(a.artist) === norm(artist));
-const APP_VERSION = "1.19.1";
+const APP_VERSION = "1.20.0";
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
