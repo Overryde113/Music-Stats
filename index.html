@@ -102,6 +102,74 @@ const itunesJsonp = (url) => new Promise((resolve, reject) => {
   script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${cb}`;
   document.body.appendChild(script);
 });
+
+// ── MULTI-SOURCE ALBUM SEARCH (iTunes + MusicBrainz + TheAudioDB) ──────────
+// Each source is tried independently and failures are swallowed per-source
+// (via .catch(() => [])) so one source being down/CORS-blocked never breaks
+// the others -- you just get fewer results from that one source.
+const searchItunesFor = (query) => {
+  const q = encodeURIComponent(query);
+  return itunesJsonp(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=15`)
+    .then(data => (data?.results || []).map(r => ({
+      collectionId: `itunes-${r.collectionId}`,
+      itunesId: r.collectionId,
+      collectionName: r.collectionName,
+      artistName: r.artistName,
+      releaseDate: r.releaseDate,
+      trackCount: r.trackCount,
+      artworkUrl100: r.artworkUrl100,
+      source: "iTunes",
+    })))
+    .catch(() => []);
+};
+const searchMusicBrainz = (query) => {
+  const q = encodeURIComponent(query);
+  return fetch(`https://musicbrainz.org/ws/2/release-group/?query=${q}&fmt=json&limit=10`)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error("MusicBrainz request failed")))
+    .then(data => (data?.["release-groups"] || []).map(rg => ({
+      collectionId: `mb-${rg.id}`,
+      itunesId: null,
+      collectionName: rg.title,
+      artistName: (rg["artist-credit"] && rg["artist-credit"][0] && rg["artist-credit"][0].name) || "",
+      releaseDate: rg["first-release-date"] || null,
+      trackCount: null,
+      artworkUrl100: `https://coverartarchive.org/release-group/${rg.id}/front-250`,
+      source: "MusicBrainz",
+    })))
+    .catch(() => []);
+};
+const searchAudioDB = (query) => {
+  const q = encodeURIComponent(query);
+  return fetch(`https://www.theaudiodb.com/api/v1/json/2/searchalbum.php?s=${q}`)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error("TheAudioDB request failed")))
+    .then(data => (data?.album || []).map(al => ({
+      collectionId: `adb-${al.idAlbum}`,
+      itunesId: null,
+      collectionName: al.strAlbum,
+      artistName: al.strArtist,
+      releaseDate: al.intYearReleased ? `${al.intYearReleased}-01-01` : null,
+      trackCount: null,
+      artworkUrl100: al.strAlbumThumb || null,
+      source: "TheAudioDB",
+    })))
+    .catch(() => []);
+};
+const multiSourceAlbumSearch = (query) => Promise.all([
+  searchItunesFor(query),
+  searchMusicBrainz(query),
+  searchAudioDB(query),
+]).then(([itunesR, mbR, adbR]) => {
+  const all = [...itunesR, ...mbR, ...adbR];
+  const seen = new Set();
+  const out = [];
+  for (const r of all) {
+    const dedupeKey = norm(r.collectionName) + "|" + norm(r.artistName);
+    if (!r.collectionName || seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+    out.push(r);
+  }
+  return out;
+});
 const SECTION_OPTIONS = [{
   value: "aotyRated",
   label: "AOTY 2026 — Rated"
@@ -308,6 +376,17 @@ const YBar = ({
 
 // ── COVER ART (auto-fetch from iTunes, fallback MusicBrainz) ──────────────
 const coverCache = {};
+// Derives a larger version of whatever URL we have, per source, for the
+// lightbox -- mirrors the watchlist app's w92 (thumb) -> w500 (lightbox)
+// pattern, just adapted per source since we don't have one shared CDN.
+const getHiResUrl = (url) => {
+  if (!url) return url;
+  if (url.includes("600x600bb")) return url.replace("600x600bb", "1200x1200bb");
+  if (url.includes("100x100bb")) return url.replace("100x100bb", "1200x1200bb");
+  if (url.includes("coverartarchive.org")) return url.replace(/-\d+$/, "-500");
+  return url;
+};
+
 const CoverImg = ({
   coverKey,
   coverUrl,
@@ -317,15 +396,21 @@ const CoverImg = ({
   size = 52,
   radius = 6
 }) => {
-  const [src, setSrc] = useState(() => coverKey ? COVERS[coverKey] : coverUrl || null);
+  const [src, setSrc] = useState(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   React.useEffect(() => {
-    if (src) return;
-    // coverUrl is cached straight from the Add Album search result at add-time --
-    // zero network calls needed at render time.
+    // Priority: an explicit coverUrl (chosen via Add Album or the
+    // rewrite-metadata search) always wins -- even over a legacy hardcoded
+    // coverKey -- since it reflects the most recent deliberate choice.
     if (coverUrl) {
       setSrc(coverUrl);
       return;
     }
+    if (coverKey && COVERS[coverKey]) {
+      setSrc(COVERS[coverKey]);
+      return;
+    }
+    setSrc(null);
     // If we have a stable iTunes collection ID (set via the Add Album tool), use
     // a direct lookup instead of a fuzzy title search -- guaranteed exact match.
     if (itunesId) {
@@ -388,15 +473,22 @@ const CoverImg = ({
         reader.readAsDataURL(blob);
       });
     }).catch(() => {});
-  }, [title, artist]);
-  return /*#__PURE__*/React.createElement("div", {
+  }, [coverUrl, coverKey, itunesId, title, artist]);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    onClick: e => {
+      if (src) {
+        e.stopPropagation();
+        setLightboxOpen(true);
+      }
+    },
     style: {
       width: size,
       height: size,
       borderRadius: radius,
       background: "#161616",
       flexShrink: 0,
-      overflow: "hidden"
+      overflow: "hidden",
+      cursor: src ? "pointer" : "default"
     }
   }, src && /*#__PURE__*/React.createElement("img", {
     src: src,
@@ -407,7 +499,40 @@ const CoverImg = ({
       objectFit: "cover",
       display: "block"
     }
-  }));
+  })), lightboxOpen && src && /*#__PURE__*/React.createElement("div", {
+    onClick: () => setLightboxOpen(false),
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.85)",
+      zIndex: 2000,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: getHiResUrl(src),
+    alt: title || "",
+    style: {
+      maxWidth: "90vw",
+      maxHeight: "80vh",
+      borderRadius: 8,
+      boxShadow: "0 20px 60px rgba(0,0,0,0.6)"
+    }
+  }), title && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      bottom: 30,
+      left: 0,
+      right: 0,
+      color: "#fff",
+      fontSize: 14,
+      fontWeight: 700,
+      textAlign: "center"
+    }
+  }, title)));
 };
 
 // ── ADD ALBUM (search iTunes, pick the right match, add it straight to your list) ──
@@ -960,7 +1085,7 @@ const SearchResultRow = ({
     borderRadius: 20,
     marginLeft: 2
   }
-}, "💿 Album"))));
+}, r.source === "iTunes" ? "🍎 iTunes" : r.source === "MusicBrainz" ? "🎵 MusicBrainz" : r.source === "TheAudioDB" ? "📀 AudioDB" : "💿 Album"))));
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -1238,8 +1363,13 @@ const EditAlbumModal = ({
     songs: album.songs || "",
     rating: album.rating || "",
     itunesId: album.itunesId || "",
+    coverUrl: album.coverUrl || "",
     section: album.section
   });
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [rewriteOpen, setRewriteOpen] = useState(false);
   const inputStyle = {
     display: "block",
     width: "100%",
@@ -1253,6 +1383,35 @@ const EditAlbumModal = ({
     marginTop: 4,
     boxSizing: "border-box"
   };
+  React.useEffect(() => {
+    if (!rewriteOpen || query.trim().length < 2) {
+      setResults([]);
+      return;
+    }
+    setLoading(true);
+    const t = setTimeout(() => {
+      multiSourceAlbumSearch(query.trim()).then(setResults).catch(() => setResults([])).finally(() => setLoading(false));
+    }, 350);
+    return () => clearTimeout(t);
+  }, [query, rewriteOpen]);
+  const applyRewrite = r => {
+    const d = r.releaseDate ? new Date(r.releaseDate) : null;
+    setForm({
+      ...form,
+      title: r.collectionName || form.title,
+      artist: r.artistName || form.artist,
+      date: d ? d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+      }) : form.date,
+      songs: r.trackCount || form.songs,
+      itunesId: r.itunesId || "",
+      coverUrl: artUrl(r) || ""
+    });
+    setQuery("");
+    setResults([]);
+    setRewriteOpen(false);
+  };
   const save = () => {
     const newItunesId = form.itunesId ? Number(form.itunesId) : undefined;
     onSave(album.id, {
@@ -1263,8 +1422,7 @@ const EditAlbumModal = ({
       rating: form.rating || undefined,
       itunesId: newItunesId,
       section: form.section,
-      // Clear cached art if the iTunes ID changed so CoverImg re-resolves it
-      coverUrl: newItunesId !== album.itunesId ? undefined : album.coverUrl
+      coverUrl: form.coverUrl || undefined
     });
     onClose();
   };
@@ -1306,7 +1464,55 @@ const EditAlbumModal = ({
       marginBottom: 16,
       letterSpacing: 1
     }
-  }, "EDIT ALBUM"), /*#__PURE__*/React.createElement("label", {
+  }, "EDIT ALBUM"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setRewriteOpen(!rewriteOpen),
+    style: {
+      width: "100%",
+      textAlign: "left",
+      background: "#0d1a12",
+      border: "1px solid #1a3022",
+      borderRadius: 6,
+      color: "#00e5a0",
+      padding: "8px 10px",
+      fontSize: 11,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      marginBottom: rewriteOpen ? 8 : 16
+    }
+  }, rewriteOpen ? "▾" : "▸", " Search iTunes to rewrite metadata"), rewriteOpen && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    placeholder: "Search title or artist…",
+    style: {
+      ...inputStyle,
+      marginTop: 0,
+      marginBottom: 8
+    }
+  }), loading && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#666",
+      fontSize: 11,
+      marginBottom: 6
+    }
+  }, "Searching…"), results.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 5,
+      maxHeight: 220,
+      overflowY: "auto"
+    }
+  }, results.map(r => /*#__PURE__*/React.createElement(SearchResultRow, {
+    key: r.collectionId,
+    r: r,
+    selected: false,
+    onPick: applyRewrite
+  })))), /*#__PURE__*/React.createElement("label", {
     style: {
       fontSize: 10,
       color: "#aaa",
@@ -1406,7 +1612,7 @@ const EditAlbumModal = ({
       display: "block",
       marginBottom: 4
     }
-  }, "iTunes ID override (force exact cover art, like a TMDB ID refetch)", /*#__PURE__*/React.createElement("input", {
+  }, "iTunes ID override (force exact cover art)", /*#__PURE__*/React.createElement("input", {
     value: form.itunesId,
     onChange: e => setForm({
       ...form,
@@ -1485,8 +1691,7 @@ const AddAlbumTool = ({
     }
     setLoading(true);
     const t = setTimeout(() => {
-      const q = encodeURIComponent(query.trim());
-      itunesJsonp(`https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=15`).then(data => setResults(data?.results || [])).catch(() => setResults([])).finally(() => setLoading(false));
+      multiSourceAlbumSearch(query.trim()).then(setResults).catch(() => setResults([])).finally(() => setLoading(false));
     }, 350);
     return () => clearTimeout(t);
   }, [query]);
@@ -1502,7 +1707,7 @@ const AddAlbumTool = ({
       }) : "TBA",
       songs: r.trackCount || "",
       rating: "",
-      itunesId: r.collectionId,
+      itunesId: r.itunesId || "",
       coverUrl: artUrl(r),
       // cached now, straight from the search result -- no re-fetch later
       section: scopedOptions[0].value
@@ -1885,7 +2090,10 @@ const AlbumCard = ({
   top5bLabel,
   coverKey,
   itunesId,
-  coverUrl
+  coverUrl,
+  id,
+  onEdit,
+  album
 }) => {
   const [open, setOpen] = useState(false);
   const has = top5?.some(Boolean) || top5b?.some(Boolean);
@@ -1951,7 +2159,11 @@ const AlbumCard = ({
     }
   }, /*#__PURE__*/React.createElement(RB, {
     r: rating
-  }), has && /*#__PURE__*/React.createElement("span", {
+  }), id && onEdit && /*#__PURE__*/React.createElement("button", {
+    onClick: (e) => { e.stopPropagation(); onEdit(album); },
+    title: "Edit",
+    style: { background: "none", border: "1px solid #1e1e1e", borderRadius: 5, color: "#aaa", cursor: "pointer", padding: "3px 7px", fontSize: 10, fontFamily: "inherit" }
+  }, "✎"), has && /*#__PURE__*/React.createElement("span", {
     style: {
       color: "#aaa",
       fontSize: 9
@@ -2025,16 +2237,21 @@ const AlbumCard = ({
 
 // ── SIMPLE ROW ───────────────────────────────────────
 const SR = ({
-  num,
-  title,
-  artist,
-  date,
-  songs,
-  notes,
-  coverKey,
-  itunesId,
-  coverUrl
+  onEdit,
+  ...a
 }) => {
+  const {
+    num,
+    title,
+    artist,
+    date,
+    songs,
+    notes,
+    coverKey,
+    itunesId,
+    coverUrl,
+    id
+  } = a;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -2083,7 +2300,11 @@ const SR = ({
       fontSize: 11,
       marginTop: 1
     }
-  }, artist, date ? ` · ${date}` : "", songs ? ` · ${songs} songs` : "", notes ? ` · ${notes}` : "")));
+  }, artist, date ? ` · ${date}` : "", songs ? ` · ${songs} songs` : "", notes ? ` · ${notes}` : "")), id && onEdit && /*#__PURE__*/React.createElement("button", {
+    onClick: () => onEdit(a),
+    title: "Edit",
+    style: { background: "none", border: "1px solid #1e1e1e", borderRadius: 5, color: "#aaa", cursor: "pointer", padding: "3px 7px", fontSize: 10, fontFamily: "inherit", flexShrink: 0 }
+  }, "✎"));
 };
 
 // ── TOP 120 ──────────────────────────────────────────
@@ -3239,7 +3460,7 @@ const findDuplicate = (albums, {
   title,
   artist
 }) => albums.find(a => itunesId && a.itunesId === itunesId || norm(a.title) === norm(title) && norm(a.artist) === norm(artist));
-const APP_VERSION = "1.23.0";
+const APP_VERSION = "1.25.0";
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
@@ -4107,7 +4328,10 @@ function App() {
         top5: a.disc1,
         top5Label: "Disc 1",
         top5b: a.disc2,
-        top5bLabel: "Disc 2"
+        top5bLabel: "Disc 2",
+        id: a.id,
+        onEdit: setEditingAlbum,
+        album: a
       });
     }
     if (a.deluxe) {
@@ -4125,7 +4349,10 @@ function App() {
         itunesId: a.itunesId,
         coverUrl: a.coverUrl,
         top5: a.top5,
-        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
+        id: a.id,
+        onEdit: setEditingAlbum,
+        album: a
       }), /*#__PURE__*/React.createElement("div", {
         style: {
           marginLeft: 18,
@@ -4158,13 +4385,18 @@ function App() {
       songs: a.songs,
       notes: a.notes,
       top5: a.top5,
-      top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+      top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
+      id: a.id,
+      onEdit: setEditingAlbum,
+      album: a
     });
   }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), AOTY_UNRATED_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
+    onEdit: setEditingAlbum,
     ...a
   })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), AOTY_UPCOMING_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
+    onEdit: setEditingAlbum,
     ...a
   }))), tab === "Underground" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CollapsibleAddAlbum, {
     albums: albums,
@@ -4186,7 +4418,10 @@ function App() {
         itunesId: a.itunesId,
         coverUrl: a.coverUrl,
         top5: a.top5,
-        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined
+        top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
+        id: a.id,
+        onEdit: setEditingAlbum,
+        album: a
       }), /*#__PURE__*/React.createElement("div", {
         style: {
           marginLeft: 18,
@@ -4215,13 +4450,18 @@ function App() {
       itunesId: a.itunesId,
       coverUrl: a.coverUrl,
       top5: a.top5,
-      top5Label: "Top Tracks"
+      top5Label: "Top Tracks",
+      id: a.id,
+      onEdit: setEditingAlbum,
+      album: a
     });
   }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), UG_UNRATED_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
+    onEdit: setEditingAlbum,
     key: a.itunesId || a.num || i,
     ...a
   })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), UG_UPCOMING_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
+    onEdit: setEditingAlbum,
     ...a
   }))), tab === "Discord" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
