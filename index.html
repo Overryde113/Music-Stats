@@ -1350,13 +1350,24 @@ const TagPill = ({
     borderRadius: 20
   }
 }, children);
+const NESTED_LABELS = {
+  deluxe: "Deluxe Edition",
+  bloodluxe: "Half Blood (BloodLuxe)"
+};
 const EditAlbumModal = ({
   album,
+  nestedKey,
   onSave,
   onDelete,
   onClose
 }) => {
-  const [form, setForm] = useState({
+  const nested = nestedKey ? album[nestedKey] || {} : null;
+  const [form, setForm] = useState(() => nestedKey ? {
+    date: nested.date || "",
+    songs: nested.songs || "",
+    rating: nested.rating || "",
+    notes: nested.notes || ""
+  } : {
     title: album.title || "",
     artist: album.artist || "",
     date: album.date || "",
@@ -1413,22 +1424,33 @@ const EditAlbumModal = ({
     setRewriteOpen(false);
   };
   const save = () => {
-    const newItunesId = form.itunesId ? Number(form.itunesId) : undefined;
-    onSave(album.id, {
-      title: form.title,
-      artist: form.artist,
-      date: form.date || "TBA",
-      songs: form.songs ? Number(form.songs) : undefined,
-      rating: form.rating || undefined,
-      itunesId: newItunesId,
-      section: form.section,
-      coverUrl: form.coverUrl || undefined
-    });
+    if (nestedKey) {
+      onSave(album.id, {
+        date: form.date || "TBA",
+        songs: form.songs ? Number(form.songs) : undefined,
+        rating: form.rating || undefined,
+        notes: form.notes || undefined
+      }, nestedKey);
+    } else {
+      const newItunesId = form.itunesId ? Number(form.itunesId) : undefined;
+      onSave(album.id, {
+        title: form.title,
+        artist: form.artist,
+        date: form.date || "TBA",
+        songs: form.songs ? Number(form.songs) : undefined,
+        rating: form.rating || undefined,
+        itunesId: newItunesId,
+        section: form.section,
+        coverUrl: form.coverUrl || undefined
+      });
+    }
     onClose();
   };
   const del = () => {
-    if (window.confirm(`Remove "${album.title}" from your catalog? This can't be undone.`)) {
-      onDelete(album.id);
+    const label = nestedKey ? `the ${NESTED_LABELS[nestedKey] || "nested edition"}` : `"${album.title}"`;
+    const scope = nestedKey ? "" : " from your catalog";
+    if (window.confirm(`Remove ${label}${scope}? This can't be undone.`)) {
+      onDelete(album.id, nestedKey);
       onClose();
     }
   };
@@ -1464,7 +1486,17 @@ const EditAlbumModal = ({
       marginBottom: 16,
       letterSpacing: 1
     }
-  }, "EDIT ALBUM"), /*#__PURE__*/React.createElement("button", {
+  }, nestedKey ? `EDIT ${(NESTED_LABELS[nestedKey] || "EDITION").toUpperCase()}` : "EDIT ALBUM"), nestedKey && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#888",
+      fontSize: 11,
+      marginBottom: 14
+    }
+  }, "Part of ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: "#ccc"
+    }
+  }, album.title), " by ", album.artist, ". Title, artist, and cover art are shared with the main album."), !nestedKey && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     onClick: () => setRewriteOpen(!rewriteOpen),
     style: {
       width: "100%",
@@ -1540,7 +1572,7 @@ const EditAlbumModal = ({
       artist: e.target.value
     }),
     style: inputStyle
-  })), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
@@ -1571,7 +1603,7 @@ const EditAlbumModal = ({
       songs: e.target.value
     }),
     style: inputStyle
-  }))), /*#__PURE__*/React.createElement("label", {
+  }))), !nestedKey && /*#__PURE__*/React.createElement("label", {
     style: {
       fontSize: 10,
       color: "#aaa",
@@ -1605,7 +1637,22 @@ const EditAlbumModal = ({
       ...form,
       rating: v
     })
-  }))), /*#__PURE__*/React.createElement("label", {
+  }))), nestedKey && /*#__PURE__*/React.createElement("label", {
+    style: {
+      fontSize: 10,
+      color: "#aaa",
+      display: "block",
+      marginBottom: 10
+    }
+  }, "Notes", /*#__PURE__*/React.createElement("input", {
+    value: form.notes,
+    onChange: e => setForm({
+      ...form,
+      notes: e.target.value
+    }),
+    placeholder: "e.g. bonus tracks, features",
+    style: inputStyle
+  })), !nestedKey && /*#__PURE__*/React.createElement("label", {
     style: {
       fontSize: 10,
       color: "#aaa",
@@ -1670,8 +1717,7 @@ const EditAlbumModal = ({
       fontFamily: "inherit"
     }
   }, "Save")))));
-};
-const AddAlbumTool = ({
+};const AddAlbumTool = ({
   albums,
   onAdd,
   onRemove,
@@ -3460,7 +3506,7 @@ const findDuplicate = (albums, {
   title,
   artist
 }) => albums.find(a => itunesId && a.itunesId === itunesId || norm(a.title) === norm(title) && norm(a.artist) === norm(artist));
-const APP_VERSION = "1.25.0";
+const APP_VERSION = "1.26.0";
 
 // ── MAIN ─────────────────────────────────────────────
 function App() {
@@ -3583,6 +3629,11 @@ function App() {
   const [today, setToday] = useState(() => new Date());
   const [albums, setAlbums] = useState(() => loadAlbums());
   const [editingAlbum, setEditingAlbum] = useState(null);
+  const [editingNestedKey, setEditingNestedKey] = useState(null);
+  const openEdit = (album, nestedKey) => {
+    setEditingAlbum(album);
+    setEditingNestedKey(nestedKey || null);
+  };
   const addAlbum = entry => {
     setAlbums(prev => {
       const next = [...prev, {
@@ -3601,16 +3652,22 @@ function App() {
       return next;
     });
   };
-  const updateAlbum = (id, updates) => {
+  const updateAlbum = (id, updates, nestedKey) => {
     setAlbums(prev => {
-      const next = prev.map(a => a.id === id ? { ...a, ...updates } : a);
+      const next = prev.map(a => {
+        if (a.id !== id) return a;
+        if (nestedKey) return { ...a, [nestedKey]: { ...(a[nestedKey] || {}), ...updates } };
+        return { ...a, ...updates };
+      });
       saveAlbums(next);
       return next;
     });
   };
-  const deleteAlbum = id => {
+  const deleteAlbum = (id, nestedKey) => {
     setAlbums(prev => {
-      const next = prev.filter(a => a.id !== id);
+      const next = nestedKey
+        ? prev.map(a => a.id === id ? { ...a, [nestedKey]: undefined } : a)
+        : prev.filter(a => a.id !== id);
       saveAlbums(next);
       return next;
     });
@@ -4330,7 +4387,7 @@ function App() {
         top5b: a.disc2,
         top5bLabel: "Disc 2",
         id: a.id,
-        onEdit: setEditingAlbum,
+        onEdit: openEdit,
         album: a
       });
     }
@@ -4351,7 +4408,7 @@ function App() {
         top5: a.top5,
         top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
         id: a.id,
-        onEdit: setEditingAlbum,
+        onEdit: openEdit,
         album: a
       }), /*#__PURE__*/React.createElement("div", {
         style: {
@@ -4369,7 +4426,10 @@ function App() {
         itunesId: a.itunesId,
         coverUrl: a.coverUrl,
         top5: a.deluxe.top5,
-        top5Label: "Top Tracks"
+        top5Label: "Top Tracks",
+        id: a.id,
+        onEdit: album => openEdit(album, "deluxe"),
+        album: a
       })));
     }
     return /*#__PURE__*/React.createElement(AlbumCard, {
@@ -4387,16 +4447,16 @@ function App() {
       top5: a.top5,
       top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
       id: a.id,
-      onEdit: setEditingAlbum,
+      onEdit: openEdit,
       album: a
     });
   }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), AOTY_UNRATED_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
-    onEdit: setEditingAlbum,
+    onEdit: openEdit,
     ...a
   })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), AOTY_UPCOMING_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
-    onEdit: setEditingAlbum,
+    onEdit: openEdit,
     ...a
   }))), tab === "Underground" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CollapsibleAddAlbum, {
     albums: albums,
@@ -4420,7 +4480,7 @@ function App() {
         top5: a.top5,
         top5Label: a.top5?.some(Boolean) ? "Top Tracks" : undefined,
         id: a.id,
-        onEdit: setEditingAlbum,
+        onEdit: openEdit,
         album: a
       }), /*#__PURE__*/React.createElement("div", {
         style: {
@@ -4436,7 +4496,10 @@ function App() {
         date: a.bloodluxe.date,
         songs: a.bloodluxe.songs,
         rating: a.bloodluxe.rating,
-        coverKey: a.bloodluxe.coverKey
+        coverKey: a.bloodluxe.coverKey,
+        id: a.id,
+        onEdit: album => openEdit(album, "bloodluxe"),
+        album: a
       })));
     }
     return /*#__PURE__*/React.createElement(AlbumCard, {
@@ -4452,16 +4515,16 @@ function App() {
       top5: a.top5,
       top5Label: "Top Tracks",
       id: a.id,
-      onEdit: setEditingAlbum,
+      onEdit: openEdit,
       album: a
     });
   }), /*#__PURE__*/React.createElement(SH, null, "Unrated"), UG_UNRATED_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
-    onEdit: setEditingAlbum,
+    onEdit: openEdit,
     key: a.itunesId || a.num || i,
     ...a
   })), /*#__PURE__*/React.createElement(SH, null, "Upcoming / Rumored"), UG_UPCOMING_ALL.map((a, i) => /*#__PURE__*/React.createElement(SR, {
     key: a.itunesId || a.num || i,
-    onEdit: setEditingAlbum,
+    onEdit: openEdit,
     ...a
   }))), tab === "Discord" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -4689,7 +4752,7 @@ function App() {
     }
   }, "YouTube Music is mostly supplemental — Spotify is primary. YT Music usage dropped from 10,991 min in 2023 to 1,476 min in 2025 as Spotify took over fully.")), tab === "Search" && /*#__PURE__*/React.createElement(SearchLibraryTool, {
     albums: albums,
-    onEdit: setEditingAlbum
+    onEdit: openEdit
   }), tab === "Stats" && /*#__PURE__*/React.createElement(StatsTool, {
     albums: albums
   }), tab === "Calendar" && /*#__PURE__*/React.createElement(CalendarTool, {
@@ -4697,9 +4760,10 @@ function App() {
     today: today
   }), editingAlbum && /*#__PURE__*/React.createElement(EditAlbumModal, {
     album: editingAlbum,
+    nestedKey: editingNestedKey,
     onSave: updateAlbum,
     onDelete: deleteAlbum,
-    onClose: () => setEditingAlbum(null)
+    onClose: () => { setEditingAlbum(null); setEditingNestedKey(null); }
   })));
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
