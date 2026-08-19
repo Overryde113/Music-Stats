@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ Bank</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inconsolata:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0d0c11;
+    --panel: #17151d;
+    --panel-2: #1e1b26;
+    --line: #2b2733;
+    --text: #ece9f2;
+    --sub: #8b869a;
+    --amber: #ffb020;
+    --mono: Consolas, Menlo, 'Courier New', monospace;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  *{ font-variant-numeric: normal; font-feature-settings: "zero" 0; }
+  html,body{ height:100%; }
+  body{
+    background: radial-gradient(1200px 600px at 20% -10%, #1a1420 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height:100vh;
+    padding: 32px 20px 80px;
+  }
+  .wrap{ max-width: 880px; margin: 0 auto; }
+
+  header{ margin-bottom: 28px; }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{
+    content:''; width:8px; height:8px; border-radius:50%;
+    background: var(--amber); box-shadow: 0 0 10px var(--amber);
+  }
+  h1{
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(32px, 6vw, 48px);
+    line-height: 0.95;
+    letter-spacing: -0.5px;
+  }
+  .sub{ color: var(--sub); font-size: 14.5px; margin-top: 10px; max-width: 480px; line-height:1.5;}
+
+  .search-box{
+    position: relative;
+    margin-top: 24px;
+  }
+  .search-box input{
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 16px;
+    padding: 16px 16px 16px 44px;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  .search-box input:focus{ border-color: var(--amber); }
+  .search-box svg{
+    position:absolute; left:16px; top:50%; transform:translateY(-50%);
+    stroke: var(--sub);
+  }
+  .search-box input::placeholder{ color: #5a5568; }
+
+  .hint-row{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;
+  }
+  .hint{
+    font-family: var(--mono); font-size: 11.5px; color: var(--sub);
+    border: 1px solid var(--line); padding: 5px 10px; border-radius:6px;
+    cursor:pointer; transition: all .15s ease; background:transparent;
+  }
+  .hint:hover{ border-color: var(--amber); color: var(--amber); }
+
+  #results{ margin-top: 28px; display:flex; flex-direction:column; gap:14px; }
+
+  .card{
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    animation: rise .25s ease;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .card-head{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap: 12px; margin-bottom: 6px; flex-wrap: wrap;
+  }
+  .artist-name{ font-family:'Archivo Black', sans-serif; font-size: 20px; }
+  .preset-tag{
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; padding: 5px 10px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .preset-note{ color: var(--sub); font-size: 13px; margin-bottom: 16px; line-height:1.5; }
+  .folder-tag{ font-family: var(--mono); font-size: 11px; color: var(--amber); margin-bottom: 10px; letter-spacing: 0.3px; }
+  .folder-tag b{ color: var(--sub); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+  .exact-path{ font-family: var(--mono); font-size: 11px; color: #d4d0e0; margin-bottom: 14px; line-height:1.6; background: #17131f; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+  .exact-path b{ color: var(--sub); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+
+  #folderTree{
+    margin-top: 18px; border: 1px solid var(--line); border-radius: 12px; padding: 22px;
+    background: var(--panel); max-height: 680px; overflow-y: auto;
+  }
+  .folder-parent-title{ font-family:'Archivo Black', sans-serif; font-size: 17px; color: var(--amber); margin-top: 22px; margin-bottom: 10px; }
+  .folder-parent:first-child .folder-parent-title{ margin-top: 0; }
+  .folder-section{ margin-bottom: 16px; padding-left: 10px; border-left: 2px solid var(--line); }
+  .folder-section-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom: 6px; }
+  .folder-section-name{ font-family: var(--mono); font-size: 13px; color: var(--text); font-weight:600; }
+  .folder-section-presets{ display:flex; gap:6px; flex-wrap:wrap; }
+  .folder-preset-badge{
+    font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 5px; cursor:pointer;
+    transition: transform .1s ease;
+  }
+  .folder-preset-badge:hover{ transform: translateY(-1px); }
+  .folder-group{ display:flex; gap:10px; font-family: var(--mono); font-size: 11.5px; color: #d4d0e0; margin: 4px 0; line-height:1.5; }
+  .folder-tier{ color: var(--sub); flex: 0 0 auto; min-width: 190px; }
+
+  #researchNotes{ margin-top: 26px; padding-top: 22px; border-top: 1px dashed var(--line); }
+  .notes-h3{ font-family:'Archivo Black', sans-serif; font-size: 15px; color: var(--amber); margin-top: 22px; margin-bottom: 8px; }
+  .notes-h3:first-child{ margin-top: 0; }
+  .notes-h4{ font-family: var(--mono); font-size: 12.5px; color: var(--text); font-weight:600; margin-top: 14px; margin-bottom: 6px; }
+  .notes-p{ font-family: var(--mono); font-size: 11.5px; color: #b8b4c4; line-height:1.6; margin: 6px 0; }
+  .notes-ul{ margin: 4px 0 10px 18px; padding: 0; }
+  .notes-ul li{ font-family: var(--mono); font-size: 11.5px; color: #b8b4c4; line-height:1.65; margin-bottom: 6px; }
+  .notes-p b, .notes-ul b{ color: var(--text); font-weight:600; }
+  .notes-hr{ border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .folder-artists{ color: #d4d0e0; }
+
+  .curve-row{ display:flex; gap:20px; align-items:flex-start; flex-wrap: wrap; }
+  .curve{ flex: 0 0 auto; }
+  .bands{
+    flex:1; min-width: 260px;
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap:8px 6px;
+  }
+  .band{ text-align:center; }
+  .band .hz{ font-family: var(--mono); font-size: 11px; color: #d4d0e0; font-weight:600; letter-spacing:0.3px; }
+  .band .type{ font-family: var(--mono); font-size: 9px; color: #a8a3ba; letter-spacing:0.5px; margin-top:2px; text-transform:uppercase; }
+  .band .db{ font-family: var(--mono); font-size: 15px; font-weight:800; margin-top:3px; }
+  .band .q{ font-family: var(--mono); font-size: 9px; color: #a8a3ba; margin-top:1px; }
+  .db.pos{ color: var(--amber); }
+  .db.neg{ color: #6fa8ff; }
+  .db.zero{ color: #d4d0e0; }
+
+
+  #empty{
+    margin-top: 40px; text-align:center; color: var(--sub);
+    font-family: var(--mono); font-size: 13px; padding: 40px 20px;
+    border: 1px dashed var(--line); border-radius: 14px;
+  }
+
+  .multi-note{
+    font-family: var(--mono); font-size: 11.5px; color: var(--amber);
+    letter-spacing: 0.5px; padding: 0 2px;
+  }
+
+  #baseline{
+    margin-top: 40px; padding: 18px 20px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--line);
+    font-size: 13px; color: var(--sub); line-height: 1.6;
+  }
+  #baseline b{ color: var(--text); }
+
+  ::selection{ background: var(--amber); color: #000; }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Signal chain / THX fixed &middot; Sonar 10-band parametric</div>
+    <h1>Find your curve.</h1>
+    <p class="sub">Type an artist. Get the preset built for how their mix actually sits — sub weight, mid scoop, top-end bite — tuned around your BlackShark's esports-first driver tuning. 10 fully parametric bands per preset now: custom frequency, gain, Q, and filter type (shelf/peaking/notch) per knob via SteelSeries Sonar.</p>
+
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search" type="text" placeholder="Type an artist or Spotify folder name… (e.g. Yeat, Bouncy Minimalist Trap)" autocomplete="off">
+    </div>
+    <div class="hint-row" id="hints"></div>
+    <button id="folderToggle" class="hint" style="margin-top:10px; border-color:var(--amber)55; color:var(--amber); font-weight:600;">📁 Browse full folder list</button>
+  </header>
+
+  <div id="folderTree" style="display:none;"></div>
+  <div id="results"></div>
+  <div id="empty" style="display:none;">No match. Try a different spelling, or browse a preset via the chips above.</div>
+
+  <div id="baseline">
+    <b>Fixed baseline:</b> Razer THX Spatial (60/63/125/250 +6dB, 500Hz–1kHz +2dB, 2k–8kHz +3dB, 16kHz +2dB) stays on underneath everything below — it's your headphone correction layer. The presets here are what you dial into SteelSeries Sonar's 10-band parametric EQ on top of it. Each knob below shows frequency, gain, filter type, and Q — set all four per band, not just gain on a fixed point.
+  </div>
+</div>
+
+<script>
+// band shape: {freq: Hz, gain: dB, q: 0.3–3ish (n/a for shelves, still stored as slope proxy), type: lowshelf|highshelf|peaking|notch}
+const PRESETS = {
+  rage: {
+    label: 'Rage / Hyperpop-Trap',
+    folders: ['Rage & Dark Trap', 'Internet Rage & Digicore (rage side)'],
+    color: '#ff3860',
+    note: 'Distorted, scooped mids, aggressive top-end. Sub still carries the weight, but the vocal-presence band (2-4kHz) is boosted enough to cut through the heavy bass instead of getting buried under it — a wide, gradual lift rather than an isolated spike, so it reads as present without sounding artificially "clarified."',
+    bands: [
+      {freq:31.5, gain:7, q:0.65, type:'lowshelf'},
+      {freq:54, gain:8.5, q:1.15, type:'peaking'},
+      {freq:98, gain:5, q:1.0, type:'peaking'},
+      {freq:215, gain:-1.5, q:1.0, type:'peaking'},
+      {freq:445, gain:-2.5, q:1.2, type:'peaking'},
+      {freq:880, gain:-1.5, q:1.3, type:'peaking'},
+      {freq:2250, gain:3.5, q:0.9, type:'peaking'},
+      {freq:4150, gain:2.5, q:0.85, type:'peaking'},
+      {freq:8400, gain:5.5, q:0.85, type:'peaking'},
+      {freq:15800, gain:6.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Yeat','Playboi Carti','Ken Carson','Destroy Lonely','Homixide Gang','HXG','Slayr','Nine Vicious','Zukenee','Sk8star','Slump6s','EsDeeKid','Cochise','ApolloRed1','Tezzus','diamond*','Rich Amiri','OsamaSon','ian','PlaqueBoyMax','Lil Uzi Vert','Trippie Redd','Juice WRLD','Camo!','BKTHERULA',"Pz'",'1300SAINT','Lancey Foux','2slimey','2hollis','Untiljapan','hako','khel','Yit','DC The Don']
+  },
+  digicore: {
+    label: 'Digicore / Glitch-Emo',
+    folders: ['Internet Rage & Digicore (hyperpop side)', 'Pure Pop & Alt-Pop (hyperpop acts)'],
+    color: '#22d3ee',
+    note: 'Glitchy, melodic, emo-tinged — rooted in Drain Gang/hyperpop, not the harsh distortion of straight rage. Lighter scoop keeps the melodic vocal delivery intact while a raised, extended top shelf gives glitch synths and digital percussion room to sparkle.',
+    bands: [
+      {freq:38, gain:2.5, q:0.7, type:'lowshelf'},
+      {freq:63, gain:3.5, q:1.0, type:'peaking'},
+      {freq:135, gain:-1.5, q:1.05, type:'peaking'},
+      {freq:355, gain:-5.5, q:1.45, type:'peaking'},
+      {freq:710, gain:-4.5, q:2.3, type:'notch'},
+      {freq:1150, gain:2.5, q:1.0, type:'peaking'},
+      {freq:2450, gain:5.5, q:1.05, type:'peaking'},
+      {freq:5100, gain:6.5, q:0.9, type:'peaking'},
+      {freq:9800, gain:7.5, q:0.9, type:'peaking'},
+      {freq:17200, gain:8.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Midwxst','vax','Lucy Bedroque','ezcodylee','prettifun','Slayr','2hollis','khel','Kuru','hako','Yit']
+  },
+  emo: {
+    label: 'Emo / SoundCloud Melodic',
+    folders: ['Emo-Rock & Lo-Fi Grunge', 'Cloud Rap & Acoustic Drill'],
+    color: '#c084fc',
+    note: 'Feeling-forward, guitar-tinged. A tighter-Q lift at 1.3kHz targets vocal rasp and emotion specifically instead of a broad boost.',
+    bands: [
+      {freq:44, gain:2.5, q:0.7, type:'lowshelf'},
+      {freq:72, gain:3.5, q:1.0, type:'peaking'},
+      {freq:165, gain:2.5, q:1.0, type:'peaking'},
+      {freq:375, gain:-2.5, q:1.65, type:'notch'},
+      {freq:760, gain:2.5, q:1.05, type:'peaking'},
+      {freq:1280, gain:4.5, q:1.15, type:'peaking'},
+      {freq:2350, gain:3.5, q:1.0, type:'peaking'},
+      {freq:3950, gain:2.5, q:1.0, type:'peaking'},
+      {freq:7900, gain:2.5, q:0.9, type:'peaking'},
+      {freq:14800, gain:2.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Juice WRLD','XXXTentacion','Trippie Redd','Ski Mask The Slump God','Polo G','NBA YoungBoy','Untiljapan','Dro Kenji','Bladee','The Kid Laroi','MGK']
+  },
+  atmo: {
+    label: 'Atmospheric Melodic Trap',
+    folders: ['Psychedelic Trap & Trap&B', 'Independent & Underground Melodic Trap'],
+    color: '#38bdf8',
+    note: 'Moody, ad-lib-heavy, spacious. Punchy without scooping — vocals and ad-libs stay in the mix.',
+    bands: [
+      {freq:37, gain:4.5, q:0.7, type:'lowshelf'},
+      {freq:62, gain:5.5, q:1.0, type:'peaking'},
+      {freq:128, gain:3.5, q:1.0, type:'peaking'},
+      {freq:295, gain:0.5, q:1.0, type:'peaking'},
+      {freq:545, gain:-3.5, q:1.85, type:'notch'},
+      {freq:980, gain:-2.5, q:1.0, type:'peaking'},
+      {freq:1980, gain:2.5, q:1.0, type:'peaking'},
+      {freq:4450, gain:3.5, q:0.9, type:'peaking'},
+      {freq:8900, gain:5.5, q:0.9, type:'peaking'},
+      {freq:15900, gain:6.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Hunxho','Sosocamo','Don Toliver','Travis Scott','Drake','Kanye West','Juice WRLD','PartyNextDoor','Lucki','Slimesito','Talinwya','pxnn','SoFaygo','Summrs','Lil Yachty','Oksurf','King Swagga','Dro Kenji','Bladee']
+  },
+  southern: {
+    label: 'Classic / Southern Trap',
+    folders: ['Bouncy Minimalist Trap', 'Luxury Melodic Trap', 'Hardcore Street & Regional Trap'],
+    color: '#facc15',
+    note: 'Hi-hat-forward, ad-lib call-and-response. A sharp notch at 420Hz keeps hats snappy vs. the 808 — more surgical than the old flat 400Hz cut.',
+    bands: [
+      {freq:34.5, gain:6.5, q:0.7, type:'lowshelf'},
+      {freq:57, gain:8.5, q:1.05, type:'peaking'},
+      {freq:112, gain:2.5, q:1.0, type:'peaking'},
+      {freq:245, gain:-3.5, q:1.15, type:'peaking'},
+      {freq:415, gain:-7.5, q:1.65, type:'peaking'},
+      {freq:890, gain:-2.5, q:1.85, type:'notch'},
+      {freq:2250, gain:5.5, q:1.0, type:'peaking'},
+      {freq:4450, gain:4.5, q:1.0, type:'peaking'},
+      {freq:8450, gain:5.5, q:0.9, type:'peaking'},
+      {freq:14900, gain:4.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Migos','Offset','Quavo','Takeoff','21 Savage','Key Glock','Moneybagg Yo','Future','Young Thug','Gunna','Lil Baby','Metro Boomin','NBA YoungBoy','Honest','Rylo Rodriguez','42 Dugg','Lil Gotit','Veeze','Draft Day','Dc2Trill','Karrahbooo','Lackvill','That Mexican OT','Glokk40Spaz']
+  },
+  heavybass: {
+    label: 'Heavy Southern Bass',
+    folders: ['Hardcore Street & Regional Trap (bass-forward acts)'],
+    color: '#fb923c',
+    note: 'Raw, rolling sub weight rather than distortion-based rage bass. Wide-Q low shelf plus three stacked bass peaks build a broader, rounder low end instead of one spiked band.',
+    bands: [
+      {freq:29, gain:9.5, q:0.65, type:'lowshelf'},
+      {freq:49, gain:9.5, q:1.0, type:'peaking'},
+      {freq:88, gain:6.5, q:1.0, type:'peaking'},
+      {freq:178, gain:2.5, q:1.0, type:'peaking'},
+      {freq:345, gain:-2.5, q:1.05, type:'peaking'},
+      {freq:795, gain:-1.5, q:1.0, type:'peaking'},
+      {freq:1950, gain:1.5, q:1.0, type:'peaking'},
+      {freq:3950, gain:1.5, q:1.0, type:'peaking'},
+      {freq:7900, gain:1.5, q:0.9, type:'peaking'},
+      {freq:14500, gain:0, q:0.6, type:'lowpass'}
+    ],
+    artists: ['BigXthaPlug','That Mexican OT']
+  },
+  warm: {
+    label: 'Warm / Alt-R&B',
+    folders: ['Alternative R&B & Neo-Soul', 'Independent & Underground Melodic Trap (soul-leaning acts)'],
+    color: '#4ade80',
+    note: 'Live instrumentation, vocal-forward. No scoop — presence and warmth stay untouched, everything flat above the low-mids.',
+    bands: [
+      {freq:41, gain:3.5, q:0.7, type:'lowshelf'},
+      {freq:64, gain:4.5, q:1.0, type:'peaking'},
+      {freq:138, gain:3.5, q:1.0, type:'peaking'},
+      {freq:315, gain:-3.5, q:1.85, type:'notch'},
+      {freq:645, gain:2.5, q:1.05, type:'peaking'},
+      {freq:1080, gain:3.5, q:1.0, type:'peaking'},
+      {freq:2180, gain:1.5, q:1.0, type:'peaking'},
+      {freq:3980, gain:0, q:1.0, type:'peaking'},
+      {freq:7950, gain:-1.5, q:0.9, type:'peaking'},
+      {freq:14700, gain:0, q:0.7, type:'lowpass'}
+    ],
+    artists: ['Frank Ocean','Tyler The Creator','Amine','Lil Yachty','The Weeknd','4rif','Jack Harlow','F3miii']
+  },
+  rnb: {
+    label: 'R&B / Contemporary R&B',
+    folders: ['Alternative R&B & Neo-Soul'],
+    color: '#f97316',
+    note: 'Moodier, bass-heavy, hypnotic style — distinct from the jazzier Warm/Alt-R&B lane. Deeper sub shelf than alt-R&B, breathy intimate vocal presence at 1kHz, smooth top shelf with no bite.',
+    bands: [
+      {freq:31.5, gain:4.5, q:0.7, type:'lowshelf'},
+      {freq:54, gain:6.5, q:1.0, type:'peaking'},
+      {freq:108, gain:2.5, q:1.0, type:'peaking'},
+      {freq:275, gain:-2.5, q:1.75, type:'notch'},
+      {freq:595, gain:1.5, q:1.0, type:'peaking'},
+      {freq:985, gain:4.5, q:1.0, type:'peaking'},
+      {freq:2180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:3950, gain:1.5, q:1.0, type:'peaking'},
+      {freq:7900, gain:2.5, q:0.9, type:'peaking'},
+      {freq:13800, gain:2.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['PartyNextDoor','Drake','SZA','6LACK','Future','Tyler The Creator','The Weeknd','XXXTentacion','Don Toliver','Travis Scott','Kanye West','Frank Ocean','4rif','Jack Harlow','The Kid Laroi','Trippie Redd','Michael Jackson']
+  },
+  poppunk: {
+    label: 'Pop-Punk / Rock Crossover',
+    folders: ['Pop-Punk & Alt-Rock'],
+    color: '#ef4444',
+    note: 'Guitar-and-kit driven, not sub-bass reliant. A tight notch at 320Hz clears guitar mud instead of a broad low-mid cut, pushes vocal snarl and cymbal shimmer instead.',
+    bands: [
+      {freq:46, gain:0, q:0.8, type:'highpass'},
+      {freq:69, gain:2.5, q:1.0, type:'peaking'},
+      {freq:148, gain:2.5, q:1.0, type:'peaking'},
+      {freq:315, gain:-4.5, q:1.45, type:'peaking'},
+      {freq:595, gain:3.5, q:1.15, type:'peaking'},
+      {freq:1180, gain:5.5, q:1.15, type:'peaking'},
+      {freq:2450, gain:5.5, q:1.0, type:'peaking'},
+      {freq:4950, gain:4.5, q:1.0, type:'peaking'},
+      {freq:8850, gain:5.5, q:0.9, type:'peaking'},
+      {freq:15700, gain:5.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['MGK','Lovejoy','Panic! At The Disco','Miley Cyrus','Olivia Rodrigo','Julia Wolf']
+  },
+  pop: {
+    label: 'Pop / Radio Crossover',
+    folders: ['Pop-Rap', 'Pure Pop & Alt-Pop'],
+    color: '#60a5fa',
+    note: 'Built to translate cleanly on phone speakers and earbuds. No hard scoop — gentle vocal-presence lift and extra top-end sparkle for a polished, radio-ready sheen.',
+    bands: [
+      {freq:41, gain:4.5, q:0.7, type:'lowshelf'},
+      {freq:64, gain:5.5, q:1.0, type:'peaking'},
+      {freq:138, gain:2.5, q:1.0, type:'peaking'},
+      {freq:345, gain:-3.5, q:1.65, type:'notch'},
+      {freq:695, gain:0.5, q:1.0, type:'peaking'},
+      {freq:1180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:2350, gain:4.5, q:1.0, type:'peaking'},
+      {freq:4950, gain:5.5, q:1.0, type:'peaking'},
+      {freq:9900, gain:5.5, q:0.9, type:'peaking'},
+      {freq:15900, gain:5.5, q:0.7, type:'highshelf'}
+    ],
+    artists: ['The Kid Laroi','salem ilese','Miley Cyrus','Jack Harlow','Olivia Rodrigo','Juice WRLD','Amine','Drake','Michael Jackson','Julia Wolf','Lil Tecca','DC The Don']
+  },
+  lyrical: {
+    label: 'Lyrical / Boom-Bap Influenced',
+    folders: ['Lyrical & Conscious Rap'],
+    color: '#f472b6',
+    note: 'Dense verses, live-band + sample warmth. 400Hz stays a small boost instead of a cut, keeping sample warmth and low-mid body under the verses.',
+    bands: [
+      {freq:34, gain:0, q:0.7, type:'highpass'},
+      {freq:64, gain:6.5, q:1.0, type:'peaking'},
+      {freq:148, gain:3.5, q:1.0, type:'peaking'},
+      {freq:395, gain:1.5, q:1.0, type:'peaking'},
+      {freq:745, gain:2.5, q:1.0, type:'peaking'},
+      {freq:1180, gain:4.5, q:1.0, type:'peaking'},
+      {freq:2180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:3950, gain:1.5, q:1.0, type:'peaking'},
+      {freq:7900, gain:0.5, q:0.9, type:'peaking'},
+      {freq:13900, gain:0, q:0.7, type:'lowpass'}
+    ],
+    artists: ['J. Cole','Kendrick Lamar','JID','Baby Keem','IDK','Kenny Mason','A$AP Rocky','Kanye West','ARDN','Cordae','Tyler The Creator']
+  },
+  classicpop: {
+    label: 'Classic Pop / Funk / Soul',
+    folders: ['Pure Pop & Alt-Pop (legacy acts)'],
+    color: '#fbbf24',
+    note: 'Live band, funk bass grooves, horns. Warm low-end punch and bright analog top-end instead of any scoop — this production was built for full-range speakers, not a bass-forward curve.',
+    bands: [
+      {freq:44, gain:4.5, q:0.7, type:'lowshelf'},
+      {freq:69, gain:6.5, q:1.0, type:'peaking'},
+      {freq:148, gain:4.5, q:1.0, type:'peaking'},
+      {freq:345, gain:2.5, q:1.0, type:'peaking'},
+      {freq:695, gain:2.5, q:1.0, type:'peaking'},
+      {freq:1180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:2350, gain:2.5, q:1.0, type:'peaking'},
+      {freq:4450, gain:2.5, q:1.0, type:'peaking'},
+      {freq:8900, gain:2.5, q:0.9, type:'peaking'},
+      {freq:14800, gain:0, q:0.6, type:'lowpass'}
+    ],
+    artists: ['Michael Jackson']
+  },
+  acoustic: {
+    label: 'Singer-Songwriter / Acoustic',
+    folders: ['(no current folder — not yet in the master list)'],
+    color: '#a7f3d0',
+    note: 'Sparse, vocal-and-guitar/piano driven. Minimal bass need, gentle natural lift through the vocal range — no scooping, nothing aggressive.',
+    bands: [
+      {freq:39, gain:0, q:0.7, type:'highpass'},
+      {freq:79, gain:2.5, q:1.0, type:'peaking'},
+      {freq:158, gain:1.5, q:1.0, type:'peaking'},
+      {freq:345, gain:0.5, q:1.0, type:'peaking'},
+      {freq:695, gain:1.5, q:1.0, type:'peaking'},
+      {freq:1180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:2180, gain:2.5, q:1.0, type:'peaking'},
+      {freq:3950, gain:1.5, q:1.0, type:'peaking'},
+      {freq:7900, gain:1.5, q:0.9, type:'peaking'},
+      {freq:15900, gain:0, q:0.7, type:'lowpass'}
+    ],
+    artists: ['Alec Benjamin','Em Beihold']
+  },
+  drill: {
+    label: 'UK Drill',
+    folders: ['UK Rap & Drill'],
+    color: '#94a3b8',
+    note: 'Dark, sparse, sliding 808s with room to breathe — low-mids pulled back so the bass slides read clearly, crisp but not harsh hi-hats, moderate vocal presence over a mostly minor-key, moody backdrop.',
+    bands: [
+      {freq:30, gain:7, q:0.65, type:'lowshelf'},
+      {freq:50, gain:6, q:1.1, type:'peaking'},
+      {freq:90, gain:2, q:1.0, type:'peaking'},
+      {freq:200, gain:-3, q:1.2, type:'peaking'},
+      {freq:400, gain:-2, q:1.1, type:'peaking'},
+      {freq:800, gain:1, q:1.0, type:'peaking'},
+      {freq:1500, gain:3, q:1.0, type:'peaking'},
+      {freq:3000, gain:3, q:1.0, type:'peaking'},
+      {freq:6000, gain:4, q:0.9, type:'peaking'},
+      {freq:12000, gain:3, q:0.75, type:'highshelf'}
+    ],
+    artists: ['Central Cee']
+  },
+  ukgarage: {
+    label: 'UK Garage / Ambient House',
+    folders: ['UK Garage & Ambient House'],
+    color: '#5eead4',
+    note: 'Warm, groove-forward, built around a shuffled 2-step feel. Rounder low end than trap, present vocal chops/samples, airy shimmer on the shuffled hi-hats rather than aggressive brightness.',
+    bands: [
+      {freq:40, gain:4, q:0.7, type:'lowshelf'},
+      {freq:65, gain:5, q:1.0, type:'peaking'},
+      {freq:120, gain:3, q:1.0, type:'peaking'},
+      {freq:250, gain:1, q:1.0, type:'peaking'},
+      {freq:500, gain:1, q:1.0, type:'peaking'},
+      {freq:900, gain:2, q:1.0, type:'peaking'},
+      {freq:1800, gain:2, q:1.0, type:'peaking'},
+      {freq:3500, gain:3, q:0.95, type:'peaking'},
+      {freq:7000, gain:3, q:0.9, type:'peaking'},
+      {freq:14000, gain:4, q:0.7, type:'highshelf'}
+    ],
+    artists: ['Fred again...']
+  },
+  universal: {
+    label: 'All Presets / Universal Blend',
+    folders: ['(spans every folder — not genre-specific, an all-purpose average of the other 14 presets)'],
+    color: '#e2e8f0',
+    note: 'A mathematical average of all 14 other presets\' band values, frequency-matched position by position — a gentle, broadly-flattering curve for when you don\'t want to switch presets per song. Boosted sub/low-bass, mild low-mid dip, present highs. Not tuned for any one genre, so it\'s a compromise everywhere rather than ideal anywhere.',
+    bands: [
+      {freq:37.4, gain:4, q:0.75, type:'lowshelf'},
+      {freq:62.3, gain:5.5, q:1.0, type:'peaking'},
+      {freq:128.1, gain:3, q:1.0, type:'peaking'},
+      {freq:296.5, gain:-1.5, q:1.0, type:'peaking'},
+      {freq:585.7, gain:-0.5, q:1.0, type:'peaking'},
+      {freq:1042.7, gain:2, q:1.0, type:'peaking'},
+      {freq:2160, gain:3, q:0.95, type:'peaking'},
+      {freq:4182, gain:3, q:0.9, type:'peaking'},
+      {freq:8243.3, gain:3.5, q:0.85, type:'peaking'},
+      {freq:14920, gain:3.5, q:0.7, type:'highshelf'}
+    ],
+    artists: []
+  }
+};
+
+const ARTIST_MAP = [];
+Object.entries(PRESETS).forEach(([key, preset]) => {
+  preset.artists.forEach(name => ARTIST_MAP.push({ name, key }));
+});
+
+// Build flat folder -> preset key map (Spotify folder names -> matching preset(s))
+const FOLDER_MAP = [];
+Object.entries(PRESETS).forEach(([key, preset]) => {
+  (preset.folders || []).forEach(folderName => {
+    // strip clarifying parentheticals like "(rage side)" for matching purposes
+    const clean = folderName.replace(/\s*\([^)]*\)\s*$/, '').trim();
+    FOLDER_MAP.push({ folderName: clean, key });
+  });
+});
+
+function curveSVG(bands, color){
+  const w = 180, h = 60, pad = 6;
+  const max = 12; // +/-12 dB range
+  const minF = 20, maxF = 20000;
+  const logMin = Math.log10(minF), logMax = Math.log10(maxF);
+  const points = bands.map(b => {
+    const x = pad + ((Math.log10(b.freq) - logMin) / (logMax - logMin)) * (w - pad*2);
+    const y = h/2 - (b.gain/max) * (h/2 - pad);
+    return [x,y];
+  });
+  const path = points.map((p,i) => (i===0?'M':'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const dots = points.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="${color}"/>`).join('');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <line x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}" stroke="#33303c" stroke-width="1" stroke-dasharray="2,3"/>
+    <path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+  </svg>`;
+}
+
+function dbClass(gain){ return gain > 0 ? 'pos' : gain < 0 ? 'neg' : 'zero'; }
+function fmtDb(gain){ return (gain > 0 ? '+' : '') + gain; }
+function fmtHz(freq){ return freq >= 1000 ? (freq/1000).toFixed(freq % 1000 === 0 ? 0 : 1) + 'k' : freq; }
+const TYPE_ABBR = { lowshelf:'LS', highshelf:'HS', peaking:'PK', notch:'NF', lowpass:'LP', highpass:'HP' };
+
+function bandHTML(bands){
+  return bands.map(b => `
+    <div class="band">
+      <div class="hz">${fmtHz(b.freq)}</div>
+      <div class="db ${dbClass(b.gain)}">${fmtDb(b.gain)}</div>
+      <div class="type">${TYPE_ABBR[b.type] || b.type} · Q${b.q.toFixed(2)}</div>
+    </div>`).join('');
+}
+
+function renderCard(artistName, presetKey){
+  const preset = PRESETS[presetKey];
+  const bandHtml = bandHTML(preset.bands);
+  const folderTag = `<div class="folder-tag"><b>Spotify folder</b> → ${preset.folders.join(' · ')}</div>`;
+  const exactPath = exactPathHTML(artistName);
+
+  return `
+  <div class="card">
+    <div class="card-head">
+      <div class="artist-name">${artistName}</div>
+      <div class="preset-tag" style="background:${preset.color}22; color:${preset.color}; border:1px solid ${preset.color}55;">${preset.label}</div>
+    </div>
+    ${folderTag}
+    ${exactPath}
+    <div class="preset-note">${preset.note}</div>
+    <div class="curve-row">
+      <div class="curve">${curveSVG(preset.bands, preset.color)}</div>
+      <div class="bands">${bandHtml}</div>
+    </div>
+  </div>`;
+}
+
+function renderPresetOverview(presetKey){
+  const preset = PRESETS[presetKey];
+  const artistList = preset.artists.join(', ');
+  const bandHtml = bandHTML(preset.bands);
+  const folderTag = `<div class="folder-tag"><b>Spotify folder</b> → ${preset.folders.join(' · ')}</div>`;
+
+  return `
+  <div class="card">
+    <div class="card-head">
+      <div class="artist-name">${preset.label}</div>
+      <div class="preset-tag" style="background:${preset.color}22; color:${preset.color}; border:1px solid ${preset.color}55;">${preset.artists.length ? preset.artists.length + ' artists' : 'no genre lock'}</div>
+    </div>
+    ${folderTag}
+    <div class="preset-note">${preset.note}</div>
+    <div class="curve-row">
+      <div class="curve">${curveSVG(preset.bands, preset.color)}</div>
+      <div class="bands">${bandHtml}</div>
+    </div>
+    ${preset.artists.length ? `<div class="preset-note" style="margin-top:14px; margin-bottom:0;"><b style="color:var(--text)">Includes:</b> ${artistList}</div>` : ''}
+  </div>`;
+}
+
+const resultsEl = document.getElementById('results');
+const emptyEl = document.getElementById('empty');
+const searchEl = document.getElementById('search');
+const hintsEl = document.getElementById('hints');
+
+// Render hint chips (one per preset)
+Object.entries(PRESETS).forEach(([key, preset]) => {
+  const chip = document.createElement('button');
+  chip.className = 'hint';
+  chip.textContent = preset.label;
+  chip.style.cssText = `border-color:${preset.color}55; color:${preset.color};`;
+  chip.addEventListener('click', () => {
+    searchEl.value = '';
+    resultsEl.innerHTML = renderPresetOverview(key);
+    emptyEl.style.display = 'none';
+    window.scrollTo({top: 200, behavior:'smooth'});
+  });
+  hintsEl.appendChild(chip);
+});
+
+function search(query){
+  const q = query.trim().toLowerCase();
+  if(!q){
+    resultsEl.innerHTML = '';
+    emptyEl.style.display = 'none';
+    return;
+  }
+
+  // Folder-name matches first — if the query matches a Spotify folder name,
+  // jump straight to that preset's overview instead of searching artists.
+  const folderMatches = FOLDER_MAP.filter(f => f.folderName.toLowerCase().includes(q));
+  if(folderMatches.length > 0){
+    emptyEl.style.display = 'none';
+    const uniqueKeys = [...new Set(folderMatches.map(f => f.key))];
+    resultsEl.innerHTML = uniqueKeys.map(key => {
+      const matchedFolder = folderMatches.find(f => f.key === key).folderName;
+      return `<div class="multi-note">Matched Spotify folder "${matchedFolder}"</div>${renderPresetOverview(key)}`;
+    }).join('');
+    return;
+  }
+
+  const matches = ARTIST_MAP.filter(a => a.name.toLowerCase().includes(q));
+  if(matches.length === 0){
+    resultsEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  // de-dupe identical name+preset pairs only — keep multiple presets per artist
+  const seen = new Set();
+  const unique = matches.filter(m => {
+    const k = m.name + '::' + m.key;
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+  // group by artist name so multi-genre artists render together with a note
+  const byName = {};
+  unique.forEach(m => {
+    if(!byName[m.name]) byName[m.name] = [];
+    byName[m.name].push(m.key);
+  });
+  const names = Object.keys(byName).slice(0, 6);
+  resultsEl.innerHTML = names.map(name => {
+    const keys = byName[name];
+    const cards = keys.map(k => renderCard(name, k)).join('');
+    if(keys.length > 1){
+      return `<div class="multi-note">${name} spans multiple styles — pick whichever matches the track</div>${cards}`;
+    }
+    return cards;
+  }).join('');
+}
+
+searchEl.addEventListener('input', e => search(e.target.value));
+
+// ============================================================
+// FULL FOLDER LIST — mirrors master_folder_list.md exactly.
+// Each micro-genre section links to its matching eq-preset key(s).
+// ============================================================
+const FOLDER_DATA = [
+  { parent: "🏛️ RAP", sections: [
+    { name: "Trap → Rage & Dark Trap", presetKeys: ["rage"], groups: [
+      ["Mainstream / ATL / 🧛 YVL", "Playboi Carti, Ken Carson, Destroy Lonely, Homixide Gang (HXG)"],
+      ["Mainstream / NOT_ATL", "Lil Uzi Vert, Trippie Redd"],
+      ["Underground / ATL / 🧛 YVL", "ApolloRed1, BKTHERULA, YVL"],
+      ["Underground / ATL / 🍦 CCB", "Camo!"],
+      ["Underground / ATL / 🐍 YSL", "Nine Vicious, Zukenee, UY SCUTI BOYZ (diamond* & Tezzus), 1300SAINT"],
+      ["Underground / ATL / 🌊 Ø Way", "Sk8star, Tezzus, diamond*, Pz'"],
+      ["Underground / ATL / None", "2slimey"],
+      ["Underground / ATL", "ian (light Rage element per your ear)"],
+      ["Underground / NOT_ATL", "2hollis, DC The Don (RYM-confirmed Rage tag — sole placement, removed from Pop-Rap)"],
+      ["Mainstream / NOT_ATL", "Yeat"],
+    ]},
+    { name: "Trap → Luxury Melodic Trap", presetKeys: ["southern"], groups: [
+      ["Mainstream / ATL / 🐍 YSL", "Young Thug, Gunna, YSL"],
+      ["Underground / ATL / 🐍 YSL", "Lil Gotit"],
+    ]},
+    { name: "Trap → Bouncy Minimalist Trap", presetKeys: ["southern"], groups: [
+      ["Mainstream / ATL", "21 Savage"],
+      ["Mainstream / ATL / 🍦 CCB", "Concrete Boys"],
+      ["Underground / ATL", "Key Glock"],
+      ["Underground / ATL / 🍦 CCB", "Karrahbooo, Honest, Draft Day"],
+      ["Underground / NOT_ATL / 🍦 CCB", "Dc2trill (Texas/Alabama), Veeze (Detroit, MI)"],
+      ["Underground / NOT_ATL", "Lackvill (Michigan), Moneybagg Yo"],
+    ]},
+    { name: "Trap → Psychedelic Trap & Trap&B", presetKeys: ["atmo"], groups: [
+      ["Mainstream / NOT_ATL / 🌵 CJ", "Cactus Jack/Jackboys, Travis Scott, Don Toliver"],
+      ["Underground / ATL", "oksurf / Oksurf"],
+      ["Underground / NOT_ATL", "King Swagga, pxnn, Sosocamo, Talinwya"],
+    ]},
+    { name: "Trap → Independent & Underground Melodic Trap", presetKeys: ["atmo"], groups: [
+      ["Mainstream / ATL", "Hunxho"],
+      ["Mainstream / ATL / 🍦 CCB", "Lil Yachty"],
+      ["Underground / ATL", "Plaqueboymax (PBM), Slimesito, Untiljapan"],
+      ["Underground / ATL / 🌵 CJ", "SoFaygo"],
+      ["Underground / NOT_ATL", "Summrs, hako, Bladee (Stockholm, Sweden — Drain Gang founder; closest thematic fit for his cloud/emo/experimental sound, no exact micro-genre folder captures Drain Gang specifically)"],
+    ]},
+    { name: "Trap → Hardcore Street & Regional Trap", presetKeys: ["southern","heavybass"], groups: [
+      ["Mainstream / ATL", "Future, Lil Baby, Metro Boomin, Migos, Offset, Quavo, Takeoff, Glokk40Spaz (Decatur, GA — moved here from Internet Rage & Digicore; real tags are Southern Hip Hop/Gangsta Rap/Dark Plugg, no confirmed Rage anywhere)"],
+      ["Mainstream / NOT_ATL / ⚡ GWE", "Rylo Rodriguez (Mobile, AL — label-affiliated with Atlanta's Lil Baby, not personally ATL)"],
+      ["Mainstream / NOT_ATL", "NBA Youngboy, That Mexican OT, BigXthaPlug"],
+      ["Mainstream / NOT_ATL / ⚡ GWE", "42 Dugg"],
+    ]},
+    { name: "Trap → Internet Rage & Digicore", presetKeys: ["rage","digicore"], groups: [
+      ["Underground / ATL", "Rich Amiri, OsamaSon, Yit"],
+      ["Underground / NOT_ATL", "Cochise, Lancey Foux, Slump6s, ezcodylee (California), Lucy Bedroque, vax (Florida), Kuru (Rockville, MD), khel, slayr (Philadelphia, PA)"],
+    ]},
+    { name: "UK Rap & Drill", presetKeys: ["drill"], groups: [
+      ["Mainstream / NOT_ATL", "Central Cee"],
+    ]},
+    { name: "Lyrical & Conscious Rap", presetKeys: ["lyrical"], groups: [
+      ["Mainstream / ATL", "JID"],
+      ["Mainstream / NOT_ATL", "A$AP Rocky, J. Cole, Kanye West (Ye), Kendrick Lamar, Tyler, The Creator"],
+      ["Underground / ATL", "Baby Keem, Kenny Mason"],
+      ["Underground / NOT_ATL", "ARDN, Cordae, IDK"],
+    ]},
+  ]},
+  { parent: "🍭 POP", sections: [
+    { name: "Pop-Rap", presetKeys: ["pop","atmo"], groups: [
+      ["Mainstream / NOT_ATL", "Aminé, Drake, Jack Harlow, Lil Tecca, The Kid Laroi"],
+      ["Underground / NOT_ATL", "LUCKI"],
+    ]},
+    { name: "Pure Pop & Alt-Pop", presetKeys: ["pop","classicpop","digicore"], groups: [
+      ["Mainstream / NOT_ATL", "Michael Jackson, Olivia Rodrigo"],
+      ["Underground / NOT_ATL", "Julia Wolf, Midwxst, prettifun"],
+    ]},
+  ]},
+  { parent: "🎛️ R&B", sections: [
+    { name: "Alternative R&B & Neo-Soul", presetKeys: ["warm","rnb"], groups: [
+      ["Underground / NOT_ATL", "Frank Ocean, F3miii"],
+    ]},
+  ]},
+  { parent: "🏛️ RAP (moved out of ROCK & PUNK — these are emo-trap / early-rage lineage, not rock)", sections: [
+    { name: "Emo-Trap & Proto-Rage", presetKeys: ["emo","rage"], groups: [
+      ["Mainstream / NOT_ATL", "XXXTENTACION, Juice WRLD (Chicago, IL — never part of the original 92-artist research pool, added independently; closest thematic fit given his Rage/Emo/Pop spread)"],
+      ["Underground / NOT_ATL", "Ski Mask The Slump God, Dro Kenji"],
+    ]},
+  ]},
+  { parent: "🎸 ROCK & PUNK", sections: [
+    { name: "Pop-Punk & Alt-Rock", presetKeys: ["poppunk","emo"], groups: [
+      ["Mainstream / NOT_ATL", "mgk"],
+    ]},
+  ]},
+  { parent: "☁️ CLOUD & DRILL OUTSIDERS", sections: [
+    { name: "Cloud Rap & Acoustic Drill", presetKeys: ["emo"], groups: [
+      ["Mainstream / NOT_ATL", "Polo G"],
+      ["Underground / NOT_ATL", "Esdeekid"],
+    ]},
+  ]},
+  { parent: "🌀 ELECTRONIC", sections: [
+    { name: "UK Garage & Ambient House", presetKeys: ["ukgarage"], groups: [
+      ["Mainstream / NOT_ATL", "Fred again..."],
+    ]},
+  ]},
+];
+
+const LABEL_KEY = [
+  ['🧛 YVL', 'Young Vampire Lifestyle / Opium'],
+  ['🐍 YSL', 'Young Stoner Life Records'],
+  ['🍦 CCB', 'Concrete Boys'],
+  ['🌵 CJ', 'Cactus Jack'],
+  ['⚡ GWE', 'street-circuit label (Lil Baby, Rylo Rodriguez, 42 Dugg)'],
+  ['🌊 Ø Way', "Atlanta collective (Tezzus, diamond*, Sk8star, Pz')"],
+];
+
+const RESEARCH_NOTES_MD = "— Reconciled & Corrected\n\nCombines doc 6 + doc 7, restores everyone doc 7 dropped, applies every correction from this session (Zukenee/1300SAINT/Nine Vicious/UY SCUTI BOYZ moved to their real Rage classification, Honest moved out of Rage/Digicore into Concrete Boys' actual lane, 2hollis's fake Cactus Jack tag removed, ARDN/Dro Kenji pulled off Digicore, GWE and Ø Way added as real label subfolders, Pz'/1300SAINT/hako added).\n\n## New artists added (independently verified)\n- **slayr** — RYM: Rage, Pop Rap, Trap, **Digicore**. Philadelphia, PA — NOT_ATL.\n- **khel** — RYM: **Digicore, Rage**, Hyperpop. Part of the \"Poprocks\" collective. Geography unconfirmed.\n- **Kuru** — Wikipedia: **Digicore, Hyperpop**. Rockville, Maryland — NOT_ATL. Member of Helix Tears / graveem1nd / TooManyStrikers, formerly NOVAGANG.\n- **Bladee** — Wikipedia/RYM: Cloud Rap, Trap, Emo Rap, Experimental Hip Hop. Stockholm, Sweden — NOT_ATL. Drain Gang founder; his 2024 album *Cold Visions* is independently ranked the #1 Rage album on RYM, so he carries real Rage crossover on top of his core Cloud/Emo sound.\n- **Yit** — thin data (born Wyatt Robinson, 2009), described only as \"melodic, late-night, trap-influenced.\" No RYM page found. Placed provisionally in Atmo based on that description — lowest-confidence addition in this file.\n\n## Digicore additions/corrections (real evidence, from this pass)\nConfirmed via RYM/Wikipedia and added to Digicore: **slayr, 2hollis, khel, Kuru**.\nChecked but **not** added — no digicore tag found anywhere in their real catalogs, despite being asked about: **2slimey** (Terror Plugg/Dark Plugg/Rage, no digicore), **Lancey Foux** (Trap/Cloud Rap/Pop Rap/Rage/Alt R&B/Dream Pop, no digicore), **Cochise** (Trap/Pop Rap/Cloud Rap/Rage, no digicore), **Pz'** and **1300SAINT** (both Rage-coded, no digicore tag in either's real sourcing).\n**hako** — no RYM page exists and no source confirms Rage or Digicore tags independently, but moved to both per direct artist knowledge, since bios only confirm \"pluggnb\" (which is genuinely rage-adjacent in origin).\n\n- **Yit** — CONFIRMED via AlbumOfTheYear: genres are **Rage, Digicore, Pop Rap**. Moved out of the earlier low-confidence Atmo placement into Rage + Digicore. Atlanta, GA — **ATL** (per your info).\n\n## Geography findings (partial — see note below)\n- **Playboi Carti, Ken Carson, Destroy Lonely, Homixide Gang** — all confirmed Atlanta, Georgia — ATL\n- **Juice WRLD** — Chicago, Illinois — NOT_ATL\n- **OsamaSon** — Goose Creek, South Carolina (born Columbus, OH) — NOT_ATL. Wikipedia genres: Hip hop, trap, rage — confirmed\n- **Rich Amiri** — Boston/Randolph, Massachusetts — NOT_ATL. Wikipedia genres: Hip-hop, R&B, pluggnb, rage — confirmed\n- **Glokk40Spaz** — Decatur, Georgia (metro Atlanta) — ATL. Genre confirmed: Southern Hip Hop, Gangsta Rap, Trap, Dark Plugg, PluggnB, Plugg — no Rage tag anywhere. **Moved from Rage → Southern in both files** since there's no real basis for the Rage placement.\n- **Zukenee** — Atlanta, Georgia — ATL\n- **Slump6s** — Rochester, New York — NOT_ATL. RYM genres: Trap, Rage, Chicago Drill — Rage confirmed\n- **Ski Mask the Slump God** — Fort Lauderdale/Broward County, Florida — NOT_ATL. No literal \"Emo Rap\" tag on Wikipedia, but firmly SoundCloud-rap-scene-adjacent (Members Only w/ XXXTENTACION)\n- **Lil Gotit** — Atlanta, Georgia — ATL\n- **Karrahbooo** — Atlanta, Georgia — ATL\n- **Dc2trill** — born Texas, split time Texas/Alabama — NOT_ATL (despite being a Concrete Boys/CCB member, a label headquartered in Atlanta)\n- **Veeze** — Detroit, Michigan — NOT_ATL\n- **Draft Day** — hometown not confirmed in sourcing checked so far\n- **Baby Keem** — raised Las Vegas, NV (born Carson, CA) — NOT_ATL. RYM genres: Trap, Pop Rap, Sample Drill\n- **Cordae** — raised Suitland, MD (born Raleigh, NC) — NOT_ATL. RYM genres: Conscious Hip Hop, Trap, Jazz Rap — matches Lyrical placement well\n- **Kenny Mason** — West Atlanta, Georgia — ATL. Genres: Southern hip-hop, trap, punk rap, rap rock — grunge/shoegaze/hip-hop fusion, matches Lyrical placement\n- **Frank Ocean** — born New Orleans, based Los Angeles — NOT_ATL. RYM: Alternative R&B, Contemporary R&B, Art Pop — confirms Warm/R&B placement\n- **F3miii** — Nigerian-Irish, UK/Ireland-based — NOT_ATL. Confirmed R&B genre\n- **IDK** — RYM: Trap, Hardcore Hip Hop, Hip Hop — no explicit \"conscious/lyrical\" tag on RYM despite reputation; PG County, Maryland-based (same regional scene as Cordae) — NOT_ATL\n- **Metro Boomin** — born St. Louis, MO but moved to Atlanta full-time (attended Morehouse College), career fully Atlanta-based — treating as ATL given how the scene identifies him\n- **Moneybagg Yo** — Memphis, TN — NOT_ATL confirmed\n- **Hunxho** — born North Carolina, raised East Atlanta (per Billboard profile) — ATL\n- **Don Toliver** — Houston, TX — NOT_ATL. RYM: Trap, Pop Rap, Alternative R&B — confirms his Atmo/Warm/R&B multi-preset placement\n- **PartyNextDoor** — Mississauga/Toronto, Canada — NOT_ATL. RYM: Alternative R&B, Trap Soul, Contemporary R&B. **Excluded from folder system per your instruction — no folder assigned.**\n- **6LACK** — Atlanta, GA — **ATL** (new finding, not previously in the file). RYM: Alternative R&B, Trap Soul, Pop Rap. **Excluded from folder system per your instruction — no folder assigned.**\n- **Tyler, the Creator** — Hawthorne, California — NOT_ATL. RYM: Hardcore Hip Hop, Neo-Soul, Hip Hop; Wikipedia adds Alternative hip-hop, West Coast hip-hop, jazz rap, horrorcore — confirms his Lyrical/Warm/R&B multi-preset spread\n- **A$AP Rocky** — Harlem, NYC — NOT_ATL. RYM: Cloud Rap, Trap, Memphis Rap — no \"lyrical/conscious\" tag at the artist level despite his technical reputation; his Lyrical preset placement is more reputation-based than RYM-tag-based, worth knowing\n- **JID** — Atlanta, GA (East Atlanta) — ATL. RYM: Trap, Conscious Hip Hop, Hardcore Hip Hop — Conscious Hip Hop confirms Lyrical placement\n- **Migos (Quavo, Offset, Takeoff)** — all confirmed Lawrenceville/Gwinnett County, Georgia (metro Atlanta) — ATL. RYM: Trap, Gangsta Rap\n- **21 Savage** — born London, raised Atlanta since childhood, universally identified as Atlanta — ATL\n- **Young Thug** — Atlanta, GA — ATL\n- **Gunna** — College Park, Georgia (metro Atlanta) — ATL\n- **Lil Baby, Future** — both consistently and repeatedly sourced as Atlanta rappers across multiple citations — ATL\n- **NBA YoungBoy** — Baton Rouge, Louisiana — NOT_ATL confirmed. RYM: Trap, Pop Rap, Gangsta Rap\n- **Kendrick Lamar** — Compton, California — NOT_ATL. RYM: West Coast Hip Hop, Conscious Hip Hop, Jazz Rap, Hardcore Hip Hop, Trap Rap, Pop Rap, Funk — strongly confirms Lyrical placement\n- **J. Cole** — Fayetteville, North Carolina (born Germany, military family) — NOT_ATL. RYM: Conscious Hip Hop, Pop Rap, Hip Hop\n- **Kanye West (Ye)** — Chicago, Illinois — NOT_ATL. RYM: Pop Rap, Hip Hop, Experimental Hip Hop — confirms his Lyrical/R&B/Classic Pop multi-preset spread\n- **Trippie Redd** — Canton, Ohio (briefly lived Atlanta before relocating to LA) — NOT_ATL. AllMusic: blends cloud rap, emo rap, trap with punk/metal influence — strongly confirms his Rage/Emo/R&B multi-preset spread\n- **Jack Harlow** — Louisville, Kentucky (raised Shelbyville) — NOT_ATL. RYM: Pop Rap, Trap, Conscious Hip Hop; Wikipedia adds Southern hip-hop — confirms Pop-Rap placement\n- **Polo G** — Chicago, Illinois — NOT_ATL. RYM: Trap, Pop Rap, Gangsta Rap; Wikipedia: Midwestern hip-hop, drill, trap, conscious hip hop — confirms Cloud Rap & Acoustic Drill placement\n- **Yeat** — Irvine, California — NOT_ATL. RYM: Rage, Trap, Pop Rap, Cloud Rap, Industrial Hip Hop, Plugg; Wikipedia: Experimental hip-hop, trap, rage, cloud rap — strongly confirms Rage & Dark Trap placement\n- **Sosocamo** — Cameron Sanders, North Carolina — NOT_ATL. RYM: Pop Rap (simpler than the original Gemini \"Trap Soul/Alternative Melodic Rap\" claim — just straightforward Pop Rap per RYM's actual tag)\n- **King Swagga, oksurf** — too niche for RYM/Wikipedia coverage; no independent source found despite searching. Geography now confirmed per your info: **oksurf is ATL**, **King Swagga is Cincinnati, OH — NOT_ATL**.\n- **pxnn** — no usable independent source found this round for genre, but geography confirmed per your info: **Virginia — NOT_ATL**.\n- **SoFaygo** — born Grand Rapids, Michigan, raised/based Cobb County, Georgia (Atlanta metro) — treating as **ATL** given his scene identity is entirely Atlanta-rooted. RYM: Pop Rap, Trap, Plugg; Wikipedia adds Rage — confirmed Cactus Jack signee, matches his existing CJ subfolder tag\n- **Talinwya** — RYM confirms only \"Trap,\" no Wikipedia page exists. Same thin-data situation as before, no new info found\n- **BigXthaPlug** — Dallas, Texas — NOT_ATL. RYM/Wikipedia: Southern Hip-Hop, Trap, Country Rap, Pop Rap — confirms Hardcore Street & Regional Trap placement\n- **Summrs** — born Lafayette, Louisiana, currently based Houston, TX — NOT_ATL. RYM: Pop Rap, PluggnB, Plugg, Trap, Cloud Rap, **Rage** — confirms Independent & Underground Melodic Trap placement; the Rage tag is new information, similar to the DC The Don/Kid Laroi/mgk pattern — could be a Rage dual-preset candidate\n- **Michael Jackson** — Gary, Indiana — NOT_ATL (obviously; confirming for completeness rather than treating him as an exception). Genres: Pop, R&B, funk, soul, disco, dance-pop, rock, new jack swing — confirms Classic Pop/Funk/Soul + R&B multi-preset placement\n- **Lil Uzi Vert** — Philadelphia, PA — NOT_ATL\n- **Lil Tecca** — Queens, NYC — NOT_ATL. Genre: Hip-Hop/Rap — supports Pop placement\n- **The Kid Laroi** — Sydney, Australia — NOT_ATL. Wikipedia genres: Hip-hop, R&B, emo rap, pop — confirms Pop+R&B spread; the \"emo rap\" tag is new information, could support adding him to Emo preset too\n- **Aminé** — Portland, Oregon — NOT_ATL. RYM: Pop Rap, Trap, Hip House; Wikipedia adds West Coast hip hop, alternative hip hop, R&B — confirms Pop/Warm placement\n- **DC The Don** — Milwaukee, Wisconsin (based LA) — NOT_ATL. RYM genres: **Pop Rap, Trap, Rage** — Rage is a real confirmed tag, not currently reflected in his placement (Pop only). AllMusic: \"output ranges from trap and rage to more melodic material influenced by emo, punk, alternative, and pop\" — he's genuinely eclectic enough to justify Rage and/or Emo/Pop-Punk as additional presets, not just Pop\n- **Olivia Rodrigo** — Murrieta, California — NOT_ATL. RYM: Singer-Songwriter, Pop Rock, Alternative Rock; Wikipedia: Pop, rock, folk — confirms current Pop-Punk + Pop dual placement\n- **Julia Wolf** — Glen Head, New York (Long Island) — NOT_ATL. **Correction:** her RYM tags are actually \"Alternative Rock, Post-Grunge, Alt-Pop\" — real rock/grunge tags exist after all (she's touring with mgk and covered Goo Goo Dolls' \"Iris\" with him). The earlier move of her fully into Pop only was based on an assumption that turned out wrong — she should probably be dual Pop-Punk + Pop, not Pop-only.\n- **mgk** — born Houston, TX, raised/identifies with Cleveland, OH — NOT_ATL either way. RYM/Wikipedia genres: Pop Rap, Pop Punk, Pop Rock, Trap, Alternative Rock, **Emo Rap** — confirms Pop-Punk placement; the Emo Rap tag is new information, similar to the Kid Laroi finding, could support an Emo dual-add too\n- **salem ilese** — Mill Valley, California — NOT_ATL. RYM: Alt-Pop, Electropop, Dance-Pop, Pop Rock, Power Pop. **Excluded from folder system per your instruction — no folder assigned.**\n- **Miley Cyrus** — Franklin, Tennessee — NOT_ATL. Wikipedia: Pop, rock. **Excluded from folder system per your instruction — no folder assigned.**\n- **Alec Benjamin** — Phoenix, Arizona — NOT_ATL. RYM: Pop, Singer-Songwriter, Alt-Pop — confirms Acoustic preset perfectly\n- **Em Beihold** — Los Angeles, California — NOT_ATL. RYM: Indie Pop, Alt-Pop, Pop — confirms Acoustic preset\n- **Fred again..** — RYM genres: Stutter House, Future Garage, **UK Garage** — perfect confirmation of the new UK Garage/Ambient House preset\n- **Central Cee** — RYM genres: **UK Drill**, Sample Drill, Pop Rap — perfect confirmation of the new UK Drill preset\n- **Key Glock** — born South Memphis, Tennessee, has since relocated to Atlanta — **ATL** (updated per your correction; RYM: Trap, Gangsta Rap, Memphis Rap — still confirms Southern placement)\n- **Travis Scott** — Missouri City, Texas (Houston area) — NOT_ATL. RYM: Trap, Pop Rap, Experimental Hip Hop — confirms Atmo/R&B dual placement\n- **Drake** — Toronto, Canada — NOT_ATL (extremely well-documented, no additional sourcing needed)\n- **Midwxst** — Columbia, South Carolina — NOT_ATL. Founding member of Helix Tears digicore collective; Wikipedia's Digicore article names him a genre pioneer directly — strong confirmation of his Digicore placement\n- **Lucy Bedroque** — born Bronx, NYC, moved to LA at age 9 — NOT_ATL. Wikipedia genres: **Rage, Experimental Hip Hop, Digicore, Sigilkore** — confirms Digicore placement with a direct genre-tag match\n- **Slayr, Kuru** — independently confirmed as notable digicore artists per Wikipedia's Digicore genre article (separate from the RYM/AOTY sourcing already logged) — extra corroboration, no change needed\n- **vax, ezcodylee** — confirmed as part of the same digicore-scene social circle (collaborators of Lucy Bedroque/prettifun per FADER interview), but no specific hometown found in sourcing checked\n- **ApolloRed1** — Atlanta, Georgia — ATL confirmed repeatedly (cousin of Playboi Carti, signed to YVL). RYM/AOTY genres: Trap, Rage, Southern Hip Hop, Plugg, PluggnB\n- **Rylo Rodriguez** — Mobile, Alabama — **NOT_ATL** (correction: was implicitly filed as ATL via the GWE label subfolder, but he's Alabama-born/based, just label-affiliated with Atlanta's Lil Baby via 4PF). Wikipedia: Southern hip-hop, Trap\n- **42 Dugg** — Detroit, Michigan — NOT_ATL (well-documented, no additional sourcing needed)\n- **That Mexican OT** — Bay City, Texas — NOT_ATL (well-documented, no additional sourcing needed)\n- **vax** — Florida — NOT_ATL (per your info)\n- **ezcodylee** — California — NOT_ATL (per your info)\n- **Lackvill** — Michigan — NOT_ATL (per your info, confirms the earlier Codex-scene guess)\n- **Draft Day** — born Florida, moved to Atlanta — ATL (per your info)\n- **Camo!** — Atlanta, GA — ATL (per your info)\n- **Honest** — Atlanta, GA — ATL (per your info)\n- **Concrete Boys (label)** — founded in Atlanta, Georgia by Lil Yachty in 2020\n- **2hollis** — Chicago, Illinois — NOT_ATL\n- **Cochise** — Palm Bay, Florida — NOT_ATL\n- **Lancey Foux** — UK-based — NOT_ATL\n- **slayr** — Philadelphia, PA — NOT_ATL\n- **Kuru** — Rockville, Maryland — NOT_ATL\n- **Bladee** — Stockholm, Sweden — NOT_ATL\n- **Ø Way roster (per Complex profile)** — confirmed ATL/Georgia-based: Tezzus, diamond*, Sk8star (Macon, GA), 10kdunkin (Cobb County, GA), EA TJ (East Atlanta), Southsidesilhouette, Percaso, ShawtyRokk, Lil Righteous, Billi0n, ReezyX, LilKixkdor. **Yung Fazo is NOT_ATL** (NYC-born, joined the crew later). **Pz'** is ATL-affiliated through the collective, though personally tied to London/West Africa through his modeling career.\n\n**Note on scope:** a genuine \"full discography and geography audit\" of all 100+ artists in this file is a much bigger job than fits in one pass — it'd take well over the search budget reasonable for a single response. What's above is everything I could verify against the specific names you flagged plus the four new adds. If you want the complete sweep done artist-by-artist, that's better run as its own dedicated task (or through Research) rather than folded into this one — let me know and I'll kick that off properly.\n\n## Explicitly excluded from the folder system (per your instruction)\nThese 9 artists appear in `eq-finder.html`'s EQ presets but are intentionally **not** assigned to any folder in this file: **salem ilese, The Weeknd, SZA, PartyNextDoor, 4rif, Lovejoy, Panic! At The Disco, 6LACK, Miley Cyrus**. Same treatment as Alec Benjamin and Em Beihold (Singer-Songwriter/Acoustic) — they stay outside the folder taxonomy entirely.\n\n## Corrections applied vs. the last two drafts you sent\n1. **Zukenee, Nine Vicious, UY SCUTI BOYZ, 1300SAINT** moved from Luxury Melodic Trap → Rage & Dark Trap (their real genre tags lean Rage, not melodic — doc 7 already caught this for Zukenee; extended the same logic to the other three YSL rage-adjacent artists).\n2. **Honest** moved out of Internet Rage & Digicore entirely → Bouncy Minimalist Trap / CCB (confirmed Concrete Boys member, not rage or digicore).\n3. **2hollis** — removed the fabricated \"🌵 CJ\" label tag doc 7 invented; he has no real Cactus Jack tie.\n4. **Lil Gotit, Metro Boomin, That Mexican OT, JID** — restored; doc 7 silently dropped all four.\n5. **ARDN, Dro Kenji** — confirmed off Digicore (no digicore signal in either's real discography); Dro Kenji sits in Psychedelic Trap & Trap&B per his actual Emo Rap/pop-metal tags, ARDN in Lyrical & Conscious Rap per his real genre (soulful/conscious hip-hop).\n6. **Rylo Rodriguez, 42 Dugg, ⚡ GWE** — added as real, per your confirmation.\n7. **Pz', 1300SAINT, hako** — added as new artists, independently verified (Pz': Ø Way, Trap/Rage/Cloud Rap; 1300SAINT: YSL, cloudy trap & rage; hako: UK pluggnb pioneer).\n8. **Ø Way** — added as a real collective subfolder (Tezzus, diamond*, Sk8star, Pz') since it's a genuine, verifiable Atlanta collective, not a Gemini invention.\n9. **Key Glock is NOT a Concrete Boys member** — Veeze, Karrahbooo, Dc2trill, Draft Day, and Honest are 🍦 CCB; Key Glock sits in Bouncy Minimalist Trap with no label subfolder.\n10. **vax, Lucy Bedroque, ezcodylee** moved from Rage & Dark Trap / Emo-Rock & Lo-Fi Grunge → Internet Rage & Digicore, per your read that they're closer to digicore/hyperpop with rage elements than pure rage or emo-rock.\n11. **Veeze** confirmed 🍦 CCB (was previously listed without a label tag).\n";
+
+// Simple markdown -> HTML renderer for the embedded research notes (headers, bold, bullets, hr, paragraphs)
+function renderMarkdownNotes(md){
+  const lines = md.split('\n');
+  let html = '';
+  let inList = false;
+  const closeList = () => { if(inList){ html += '</ul>'; inList = false; } };
+  const inlineFmt = (s) => s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>');
+  lines.forEach(raw => {
+    const line = raw.trim();
+    if(line === ''){ closeList(); return; }
+    if(line === '---'){ closeList(); html += '<hr class="notes-hr">'; return; }
+    if(line.startsWith('## ')){ closeList(); html += `<h3 class="notes-h3">${inlineFmt(line.slice(3))}</h3>`; return; }
+    if(line.startsWith('### ')){ closeList(); html += `<h4 class="notes-h4">${inlineFmt(line.slice(4))}</h4>`; return; }
+    if(/^\d+\.\s/.test(line)){
+      closeList();
+      html += `<div class="notes-p">${inlineFmt(line)}</div>`;
+      return;
+    }
+    if(line.startsWith('- ')){
+      if(!inList){ html += '<ul class="notes-ul">'; inList = true; }
+      html += `<li>${inlineFmt(line.slice(2))}</li>`;
+      return;
+    }
+    closeList();
+    html += `<div class="notes-p">${inlineFmt(line)}</div>`;
+  });
+  closeList();
+  return html;
+}
+
+// Exact artist -> [{parent, microgenre, trl}] path lookup, built from FOLDER_DATA
+const ARTIST_FOLDER_PATH = {};
+FOLDER_DATA.forEach(parentBlock => {
+  parentBlock.sections.forEach(section => {
+    section.groups.forEach(([trl, artistsStr]) => {
+      artistsStr.split(',').forEach(raw => {
+        const name = raw.replace(/\(.*?\)/g, '').trim();
+        if(!name) return;
+        if(!ARTIST_FOLDER_PATH[name]) ARTIST_FOLDER_PATH[name] = [];
+        ARTIST_FOLDER_PATH[name].push({ parent: parentBlock.parent, microgenre: section.name, trl });
+      });
+    });
+  });
+});
+
+function exactPathHTML(artistName){
+  const paths = ARTIST_FOLDER_PATH[artistName];
+  if(!paths || paths.length === 0) return '';
+  const rows = paths.map(p => `${p.parent} / ${p.microgenre} / ${p.trl}`).join('<br>');
+  return `<div class="exact-path"><b>Exact folder path</b><br>${rows}</div>`;
+}
+
+function presetBadges(keys){
+  if(!keys.length) return '<span style="color:var(--sub); font-size:11px;">no preset match yet</span>';
+  return keys.map(k => {
+    const p = PRESETS[k];
+    return `<span class="folder-preset-badge" data-key="${k}" style="background:${p.color}22; color:${p.color}; border:1px solid ${p.color}55;">${p.label}</span>`;
+  }).join(' ');
+}
+
+function renderFolderTree(){
+  const html = FOLDER_DATA.map(parentBlock => `
+    <div class="folder-parent">
+      <div class="folder-parent-title">${parentBlock.parent}</div>
+      ${parentBlock.sections.map(section => `
+        <div class="folder-section">
+          <div class="folder-section-head">
+            <div class="folder-section-name">${section.name}</div>
+            <div class="folder-section-presets">${presetBadges(section.presetKeys)}</div>
+          </div>
+          ${section.groups.map(([tier, artists]) => `
+            <div class="folder-group">
+              <div class="folder-tier">${tier}</div>
+              <div class="folder-artists">${artists}</div>
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>`).join('');
+
+  const labelKeyHtml = `
+    <div class="folder-parent">
+      <div class="folder-parent-title">Label / Collective Key</div>
+      <div class="folder-section">
+        ${LABEL_KEY.map(([tag, desc]) => `<div class="folder-group"><div class="folder-tier">${tag}</div><div class="folder-artists">${desc}</div></div>`).join('')}
+      </div>
+    </div>`;
+
+  const notesHtml = `<div id="researchNotes">${renderMarkdownNotes(RESEARCH_NOTES_MD)}</div>`;
+
+  folderTreeEl.innerHTML = html + labelKeyHtml + notesHtml;
+
+  folderTreeEl.querySelectorAll('.folder-preset-badge').forEach(el => {
+    el.addEventListener('click', () => {
+      folderTreeEl.style.display = 'none';
+      resultsEl.innerHTML = renderPresetOverview(el.dataset.key);
+      emptyEl.style.display = 'none';
+      window.scrollTo({top: 200, behavior:'smooth'});
+    });
+  });
+}
+
+const folderToggleEl = document.getElementById('folderToggle');
+const folderTreeEl = document.getElementById('folderTree');
+let folderTreeBuilt = false;
+folderToggleEl.addEventListener('click', () => {
+  const showing = folderTreeEl.style.display !== 'none';
+  if(showing){
+    folderTreeEl.style.display = 'none';
+    folderToggleEl.textContent = '📁 Browse full folder list';
+  } else {
+    if(!folderTreeBuilt){ renderFolderTree(); folderTreeBuilt = true; }
+    folderTreeEl.style.display = 'block';
+    resultsEl.innerHTML = '';
+    emptyEl.style.display = 'none';
+    searchEl.value = '';
+    folderToggleEl.textContent = '✕ Close folder list';
+    window.scrollTo({top: 200, behavior:'smooth'});
+  }
+});
+
+</script>
+</body>
+</html>
